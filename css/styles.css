@@ -1,0 +1,45 @@
+/*
+A custom Bootstrap 3.1 theme from http://bootply.com\
+
+This CSS code should follow the 'bootstrap.css'
+in your HTML file.
+
+license: MIT
+author: bootply.com
+*/
+
+
+html,body{
+  	height:100%;
+}
+
+
+.inputbar {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 4px;
+    background-color: #33CCFF;
+}
+
+.selected {
+    background-color: #A6FFA7;
+}
+
+#main, #main>.row {
+	height:100%;
+}
+
+
+#left {
+	height:100%;
+}
+
+#map-canvas {
+	width:33.3333%;
+    height:calc(100% - 0);
+    position:absolute;
+    right:16px;
+    top:50px;
+    bottom:0;
+    overflow:hidden;
+}
