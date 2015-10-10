@@ -3,7 +3,7 @@ import score
 #time_remaining = score.something1
 #time_to_end = score.something2
 
-# Import activities into the activities dictionary
+# Import activities into the activities list
 activities = []
 itinerary = []
 
