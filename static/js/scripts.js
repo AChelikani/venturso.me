@@ -1,33 +1,9 @@
 
-$(document).ready(function(){/* google maps -----------------------------------------------------*/
-// google.maps.event.addDomListener(window, 'load', initialize);
-
-// function initialize() {
-
-//   /* position Amsterdam */
-//   var latlng = new google.maps.LatLng(52.3731, 4.8922);
-
-//   var mapOptions = {
-//     center: latlng,
-//     scrollWheel: false,
-//     zoom: 13
-//   };
-  
-//   var marker = new google.maps.Marker({
-//     position: latlng,
-//     url: '/',
-//     animation: google.maps.Animation.DROP
-//   });
-  
-//   var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-//   marker.setMap(map);
-
-// };
-/* end google maps -----------------------------------------------------*/
+$(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
-    console.log($("form").serialize());
+    console.log($("form").serialize()+"&pinList=[]");
     
     $.ajax({
       type : "GET",
@@ -38,10 +14,10 @@ $(document).ready(function(){/* google maps ------------------------------------
       success: function(result) {
           $("#activityList").html("");
           jsonit = JSON.parse(result);
-          console.log(jsonit);
+          // console.log(jsonit);
           for(act in jsonit['activityList']) {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
-              console.log(jsonit['activityList'][act]['activity']);
+              // console.log(jsonit['activityList'][act]['activity']);
               
               liElem = $("<li class='list-group-item'>"+jsonit['activityList'][act]['activity']+"</li>");
               if(jsonit[jsonit['activityList'][act]['pinned']]) {
@@ -50,7 +26,7 @@ $(document).ready(function(){/* google maps ------------------------------------
                 liElem.addClass("selected");
               }
               liElem.on("click", function() {
-                console.log("ay");
+                // console.log("ay");
                 if($(this).hasClass("pinned")) {
                   // console.log("Has pinned");
                   $(this).removeClass("pinned");
