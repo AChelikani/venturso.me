@@ -6,9 +6,11 @@ var platform = new H.service.Platform({
 var defaultLayers = platform.createDefaultLayers();
 var map;
 var ui;
+var mapEvents;
+var behavior;
 
 function initialize() {
-	var map = new H.Map(
+	map = new H.Map(
 	    document.getElementById('map-canvas'),
 	    defaultLayers.normal.map,
 	    {
@@ -16,7 +18,10 @@ function initialize() {
 	      center: { lat: 34.13, lng: -118.12 }
 	    });
 
-	var ui = H.ui.UI.createDefault(map, defaultLayers);
+	ui = H.ui.UI.createDefault(map, defaultLayers);
+
+	mapEvents = new H.mapevents.MapEvents(map);
+	behavior = new H.mapevents.Behavior(mapEvents);
 }
 
 window.addEventListener('load', initialize, false )
