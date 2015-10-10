@@ -35,7 +35,7 @@
   </form>
 </div>
 
-<div class="container-fluid" id="main">
+<div class="container-fluid" id="main" style="visibility:hidden;">
   <div class="row">
     <div class="col-xs-5 center-block" id="left">
 
@@ -63,16 +63,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
-    <script type="text/javascript">
-      function toggle(element) {
-        if (element.className == "list-group-item") {
-          element.className += " selected";
-        }
-        else {
-          element.className = "list-group-item";
-        }
-      }
-
+    <script type="text/javascript"> 
+      
       var url = "http://localhost:5000/pathfind?from=Berkeley&to=Caltech&fromtime=Oct10&totime=Oct12";
       var locations = [];
       var names = [];

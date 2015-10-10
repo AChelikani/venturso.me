@@ -3,10 +3,23 @@ $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
+    
+
+    // Grab all the pinned venues we want to include in the journey
+    console.log($("form").serialize());
+    pinList = "&pinList=["
+    $(".pinned").each(function(index) {
+      if(index > 0)
+        pinList += ",";
+      pinList += this.innerHTML;
+    });
+    pinList += "]"
+
+    // Generate a new itinerary
     $.ajax({
       type : "GET",
       url : "/pathfind",
-      data: $("form").serialize(),
+      data: $("form").serialize() + pinList,
       // data: JSON.stringify(data, null, '\t'),
       // contentType: 'application/json;charset=UTF-8',
       success: function(result) {
