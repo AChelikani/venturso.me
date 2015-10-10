@@ -4,6 +4,7 @@ from flask import request
 app = Flask(__name__)
 
 # Splash page!
+# To run, type into browser: localhost:5000
 @app.route('/')
 def splash():
     return render_template('splash.html')
@@ -16,6 +17,9 @@ def create_tour():
 
 # Called to gen the map. Dump all the algorithm junk here. Should accept from
 # address, to address, from time, to time, and optional optimization parameters
+#
+# Example to use:
+# http://localhost:5000/pathfind?from=Berkeley&to=Caltech&fromtime=Oct10&totime=Oct12
 @app.route('/pathfind', methods=['GET'])
 def path_find():
 	print request.args['from']
