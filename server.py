@@ -30,11 +30,13 @@ def path_find():
 	print request.args['to']
 	print request.args['fromtime']
 	print request.args['totime']
+	
+	
+
 	return "Hello World"
+
 
 if __name__ == '__main__':
     # app.run()
 	app.run(debug=True)
-
-
 
