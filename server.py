@@ -15,6 +15,10 @@ def splash():
 def create_tour():
     return render_template('creation.html')
 
+@app.route('/map')
+def map_page():
+    return render_template('map.html')
+
 # Called to gen the map. Dump all the algorithm junk here. Should accept from
 # address, to address, from time, to time, and optional optimization parameters
 #

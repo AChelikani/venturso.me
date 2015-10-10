@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<meta charset="utf-8">
-		<title>NexStop</title>
-		<meta name="generator" content="Bootply" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>NexStop</title>
+    <meta name="generator" content="Bootply" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet">
 
-		<link href="{{ url_for('static',filename='css/styles.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/styles.css') }}" rel="stylesheet">
 
     <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
     <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
@@ -16,8 +16,8 @@
     <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="http://js.api.here.com/v3/3.0/mapsjs-ui.css" />
     <script src="{{ url_for('static',filename='map.js') }}" type="text/javascript" charset="utf-8"></script>
-	</head>
-	<body>
+  </head>
+  <body>
 <!-- begin template -->
 
 <div class="inputbar">
@@ -42,11 +42,9 @@
   </form>
 </div>
 
-<div id="map-canvas" style="height:480px; width:640px;"></div>
-<div> HI </div>
 <div class="container-fluid" id="main">
   <div class="row">
-  	<div class="col-xs-5" id="left">
+    <div class="col-xs-5" id="left">
     
       <h2><center>Venues</center></h2>
         <ul class="list-group">
@@ -64,18 +62,20 @@
           <li onclick="toggle(this)" class="list-group-item">Item 12</li>
           <li onclick="toggle(this)" class="list-group-item">Item 13</li>
         </ul>
-      
-    <div class="col-xs-4"><!--map-canvas will be postioned here--></div>
-    
+    </div>
+
+    <div class="col-xs-5"><!--map-canvas will be postioned here-->
+      <div id="map-canvas" style="height:480px; width:640px;"></div>
+    </div>
+
   </div>
 </div>
 <!-- end template -->
 
-	<!-- script references -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-		<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
-		<script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&output=embed"></script>
-		<script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
+  <!-- script references -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
     <script type="text/javascript"> 
       function toggle(element) {
         if (element.className == "list-group-item") {
@@ -87,5 +87,5 @@
       }
     </script>
 
-	</body>
+  </body>
 </html>
