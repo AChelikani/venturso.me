@@ -33,7 +33,7 @@ def path_find():
 	
 	
 
-	return "Hello World"
+	return "{'activityList': [{activity: 'Eiffel Tower',latitude: lat,longitude: long,type: 'attraction'},{activity: 'Le Louvre',latitude: lat,longitude: long,type: 'attraction'},{activity: 'Best Paris Baguettes',latitude: lat,longitude: long,type: 'food'},{activity: 'Uber1',latitude: lat,longitude: long,type: 'transportation'},{activity: 'Uber2',latitude: lat,longitude: long,type: 'transportation'}],'itinerary': ['Eiffel Tower', 'Uber1', 'Best Paris Baguettes', 'Uber2', 'Le Louvre']}"
 
 
 if __name__ == '__main__':
