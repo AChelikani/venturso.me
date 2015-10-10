@@ -83,11 +83,19 @@
       }
 
       var url = "http://localhost:5000/pathfind?from=Berkeley&to=Caltech&fromtime=Oct10&totime=Oct12";
+      var locations = [];
+      var names = [];
 
       $.getJSON(url, function(data) {
         for(i = 0; i < data.activityList.length; i ++) {
           document.getElementById("l" + String(i+1)).innerHTML = data.activityList[i].activity;
+          names.push(data.activityList[i].activity);
+          var temp = [data.activityList[i].latitude, data.activityList[i].longitude];
+          locations.push(temp);
         }
+        localStorage.setItem("itinerary", data.itinerary);
+        localStorage.setItem("locations", locations);
+        localStorage.setItem("names", names);
       });
 
       var platform = new H.service.Platform({
@@ -102,7 +110,7 @@
       var behavior;
 
       function initialize() {
-        var marker = new H.map.Marker({ lat: 34.139011, lng : -118.124514});
+        var marker = new H.map.Marker({ lat: 34.139011, lng : -118.124514 });
         map = new H.Map(
             document.getElementById('map-canvas'),
             defaultLayers.normal.map,
