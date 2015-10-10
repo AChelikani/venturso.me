@@ -15,24 +15,20 @@
   </head>
   <body>
 <!-- begin template -->
-
 <div class="inputbar">
+  <img src="../static/logo.png" id="logo" />
   <form id="formRoute" class="form-inline" role="form">
     <div class="form-group">
-      <label for="start">Start Time:</label>
-      <input type="text" class="form-control" name="fromtime" id="start">
+      <input type="text" class="form-control" name="fromtime" id="start" placeholder="Start Time">
     </div>
     <div class="form-group">
-      <label for="end">End Time:</label>
-      <input type="text" class="form-control" name="totime" id="end">
+      <input type="text" class="form-control" name="totime" id="end" placeholder = "End Time">
     </div>
     <div class="form-group">
-      <label for="from">From:</label>
-      <input type="text" class="form-control" name="from" id="from">
+      <input type="text" class="form-control" name="from" id="from" placeholder = "Starting Location...">
     </div>
     <div class="form-group">
-      <label for="to">To:</label>
-      <input type="text" class="form-control" name="to" id="to">
+      <input type="text" class="form-control" name="to" id="to" placeholder = "Ending Location...">
     </div>
     <button class="btn btn-sml" id="btnGen">Generate!</button>
   </form>
@@ -41,7 +37,7 @@
 <div class="container-fluid" id="main">
   <div class="row">
     <div class="col-xs-5" id="left">
-    
+
       <h2><center>Venues</center></h2>
         <ul class="list-group" id="activityList">
           <li onclick="toggle(this)" class="list-group-item" id="l1">-</li>

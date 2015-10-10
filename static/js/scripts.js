@@ -42,13 +42,23 @@ $(document).ready(function(){/* google maps ------------------------------------
           for(act in jsonit['activityList']) {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
               console.log(jsonit['activityList'][act]['activity']);
-              liElem = "<li onclick='toggle(this)'' class='list-group-item";
-              // console.log(jsonit['activityList'][act]['activity']);
-              // console.log(jsonit['itinerary']);
-              if($.inArray(jsonit['activityList'][act]['activity'], jsonit['itinerary']) >= 0) {
-                liElem += " selected";
+              
+              liElem = $("<li class='list-group-item'>"+jsonit['activityList'][act]['activity']+"</li>");
+              if(jsonit[jsonit['activityList'][act]['pinned']]) {
+                liElem.addClass("pinned");
+              } else if($.inArray(jsonit['activityList'][act]['activity'], jsonit['itinerary']) >= 0) {
+                liElem.addClass("selected");
               }
-              liElem += "'>"+jsonit['activityList'][act]['activity']+"</li>";
+              liElem.on("click", function() {
+                console.log("ay");
+                if($(this).hasClass("pinned")) {
+                  // console.log("Has pinned");
+                  $(this).removeClass("pinned");
+                  $(this).removeClass("selected");
+                } else {
+                  $(this).addClass("pinned");
+                }
+              });
               $("#activityList").append(liElem);
 
             }
@@ -59,14 +69,15 @@ $(document).ready(function(){/* google maps ------------------------------------
 
   });
 
+
 });
 
 // I love mixing jquery and javascript in the same file
-function toggle(element) {
-  if (element.className == "list-group-item") {
-    element.className += " selected";
-  }
-  else {
-    element.className = "list-group-item";
-  }
-}
+// function toggle(element) {
+//   if (element.className == "list-group-item") {
+//     element.className += " pinned";
+//   }
+//   else {
+//     element.className = "list-group-item";
+//   }
+// }
