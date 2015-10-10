@@ -33,7 +33,7 @@ body {
 #button {
 	position: absolute;
 	left: 50%;
-	top: 50%;
+	top: 55%;
 	-webkit-transform: translate(-50%, -50%);
 	-moz-transform: translate(-50%, -50%);
 	-o-transform: translate(-50%, -50%);

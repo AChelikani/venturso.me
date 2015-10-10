@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
   	<head>
-  	<link rel="icon" type="image/png" href="../static/favicon.png">
-    <link rel="stylesheet" type="text/css" href="../static/splash.css">
+  	<link rel="icon" type="image/png" href="{{ url_for('static',filename='favicon.png') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='splash.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="../static/splash.js"></script>
+    <script src="{{ url_for('static',filename='splash.js') }}"></script>
     <title>NextStop</title>
   	</head>
   	<body>
-	    <!-- #5 --><img id="london" src="../static/london.jpg" class="backgroundimages" style="display:block;"/>
-	    <!-- #4 --><img id="newyork" src="../static/newyork.jpg" class="backgroundimages" style="display:none;"/>
-	    <!-- #3 --><img id="paris" src="../static/paris.jpg" class="backgroundimages" style="display:none;"/>
-	    <!-- #2 --><img id="tokyo" src="../static/tokyo.jpg" class="backgroundimages" style="display:none;"/>
-	    <!-- #1 --><img id="venice" src="../static/venice.jpg" class="backgroundimages" style="display:none;"/>
+	    <!-- #5 --><img id="london" src="{{ url_for('static',filename='london.jpg') }}" class="backgroundimages" style="display:block;"/>
+	    <!-- #4 --><img id="newyork" src="{{ url_for('static',filename='newyork.jpg') }}" class="backgroundimages" style="display:none;"/>
+	    <!-- #3 --><img id="paris" src="{{ url_for('static',filename='paris.jpg') }}" class="backgroundimages" style="display:none;"/>
+	    <!-- #2 --><img id="tokyo" src="{{ url_for('static',filename='tokyo.jpg') }}" class="backgroundimages" style="display:none;"/>
+	    <!-- #1 --><img id="venice" src="{{ url_for('static',filename='venice.jpg') }}" class="backgroundimages" style="display:none;"/>
 
 	    <div id="center">
 	    	<div id="logobg">
-	    		<img id="logo" src="../static/logo.png" />
+	    		<img id="logo" src="{{ url_for('static',filename='logo.png') }}" />
 	    	</div>
 	    	<div id="button">
-	    		<a href="#">ENTER</a>
+	    		<a href="/creation">ENTER</a>
 	    	</div>
 	    </div>
    	</body>
