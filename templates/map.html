@@ -34,7 +34,7 @@
   </form>
 </div>
 
-<div class="container-fluid" id="main" style="visibility:hidden;">
+<div class="container-fluid" id="main">
   <div class="row">
     <div class="col-xs-5" id="left">
 
@@ -55,13 +55,60 @@
     <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
     <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
     <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
-    <script src="{{ url_for('static',filename='map.js') }}" type="text/javascript" charset="utf-8"></script>
     <script src="http://js.api.here.com/v3/3.0/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
-
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
+    <script type="text/javascript"> 
+      function toggle(element) {
+        if (element.className == "list-group-item") {
+          element.className += " selected";
+        }
+        else {
+          element.className = "list-group-item";
+        }
+      }
+
+      var url = "http://localhost:5000/pathfind?from=Berkeley&to=Caltech&fromtime=Oct10&totime=Oct12";
+
+      $.getJSON(url, function(data) {
+        for(i = 0; i < data.activityList.length; i ++) {
+          document.getElementById("l" + String(i+1)).innerHTML = data.activityList[i].activity;
+        }
+      });
+
+      var platform = new H.service.Platform({
+        'app_id': 'N6MJW6UzW079S5ZZwcPl',
+        'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
+      });
+
+      var defaultLayers = platform.createDefaultLayers();
+      var map;
+      var ui;
+      var mapEvents;
+      var behavior;
+
+      function initialize() {
+        var marker = new H.map.Marker({ lat: 34.139011, lng : -118.124514});
+        map = new H.Map(
+            document.getElementById('map-canvas'),
+            defaultLayers.normal.map,
+            {
+              zoom: 10,
+              center: { lat: 34.13, lng: -118.12 }
+            });
+
+        ui = H.ui.UI.createDefault(map, defaultLayers);
+
+        mapEvents = new H.mapevents.MapEvents(map);
+        behavior = new H.mapevents.Behavior(mapEvents);
+        map.addObject(marker);
+
+      }
+
+
+      window.addEventListener('load', initialize, false )
+    </script>
 
   </body>
 </html>
