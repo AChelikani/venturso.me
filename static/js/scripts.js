@@ -3,12 +3,23 @@ $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
-    console.log($("form").serialize()+"&pinList=[]");
     
+
+    // Grab all the pinned venues we want to include in the journey
+    console.log($("form").serialize());
+    pinList = "&pinList=["
+    $(".pinned").each(function(index) {
+      if(index > 0)
+        pinList += ",";
+      pinList += this.innerHTML;
+    });
+    pinList += "]"
+
+    // Generate a new itinerary
     $.ajax({
       type : "GET",
       url : "/pathfind",
-      data: $("form").serialize(),
+      data: $("form").serialize() + pinList,
       // data: JSON.stringify(data, null, '\t'),
       // contentType: 'application/json;charset=UTF-8',
       success: function(result) {
@@ -18,7 +29,7 @@ $(document).ready(function() {
           for(act in jsonit['activityList']) {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
               // console.log(jsonit['activityList'][act]['activity']);
-              
+
               liElem = $("<li class='list-group-item'>"+jsonit['activityList'][act]['activity']+"</li>");
               if(jsonit[jsonit['activityList'][act]['pinned']]) {
                 liElem.addClass("pinned");

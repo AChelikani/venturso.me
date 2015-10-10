@@ -31,10 +31,9 @@ def path_find():
 	print request.args['to']
 	print request.args['fromtime']
 	print request.args['totime']
-	
+	print request.args['pinList']
 	
 
-	# jsonJunk = {'activityList': [{activity: 'Eiffel Tower',latitude: 'lat',longitude: 'lon',type: 'attraction'},{activity: 'Le Louvre',latitude: 'lat',longitude: 'lon',type: 'attraction'},{activity: 'Best Paris Baguettes',latitude: 'lat',longitude: 'lon',type: 'food'},{activity: 'Uber1',latitude: 'lat',longitude: 'lon',type: 'transportation'},{activity: 'Uber2',latitude: 'lat',longitude: 'lon',type: 'transportation'}],'itinerary': ['Eiffel Tower', 'Uber1', 'Best Paris Baguettes', 'Uber2', 'Le Louvre']}
 	jsonJunk = {'activityList': [{'activity': 'Dodger Stadium','latitude': '34.072958','longitude': '-118.240648','type': 'attraction', 'pinned':'false'},{'activity': 'Huntington Beach','latitude': '33.661622','longitude': '-118.008125','type': 'attraction', 'pinned':'false'},{'activity': 'Chipotle','latitude': '34.141782','longitude': '-118.132289','type': 'food', 'pinned':'false'},{'activity': 'Uber1','latitude': '0','longitude': '0','type': 'transportation', 'pinned':'false'},{'activity': 'Uber2','latitude': '0','longitude': '0','type': 'transportation', 'pinned':'false'},{'activity': 'Griffith Observatory','latitude': '34.118487','longitude': '-118.300372','type': 'attraction', 'pinned':'false'}],'itinerary': ['Griffith Observatory', 'Uber1', 'Chipotle', 'Uber2', 'Dodger Stadium']}
 	print json.dumps(jsonJunk)
 	return json.dumps(jsonJunk)
