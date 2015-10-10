@@ -80,12 +80,12 @@ def build_itinerary(act_list, start, end):
     return itinerary
 
 def pollHereTravelTime(a, b, c, d):
-    #start = time.clock()
+    start = time.clock()
     a,b,c,d = map(str, [a,b,c,d])
     url = "https://route.cit.api.here.com/routing/7.2/calculateroute.json?waypoint0=" + a + "%2C" + b + "&waypoint1=" + c + "%2C" + d + "&mode=fastest%3Bcar%3Btraffic%3Aenabled&app_id=N6MJW6UzW079S5ZZwcPl&app_code=FOkZLbFrMx77dDpomCs9ZQ&tf&departure=now"
     r = requests.get(url)
     relevant = r.json()
-    #print time.clock() - start
+    print time.clock() - start
     return relevant["response"]["route"][0]["summary"]["travelTime"]
 
 def pollHereAttractions(a, b):
