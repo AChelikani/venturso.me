@@ -95,6 +95,7 @@ def pollHereTravelTime(a, b, c, d):
 	#print time.clock() - start
 	return relevant["response"]["route"][0]["summary"]["travelTime"]
 
+
 def pollHereAttractions(a, b):
 	#start = time.clock()
 	response = []
@@ -144,5 +145,4 @@ def get_best_itinerary(start_lat, start_lng, end_lat, end_lng):
 			best_itinerary = jsonify(itn,end)
 		return best_itinerary
 
-test()
 
