@@ -12,13 +12,13 @@ $(document).ready(function(){/* google maps ------------------------------------
 //     scrollWheel: false,
 //     zoom: 13
 //   };
-  
+
 //   var marker = new google.maps.Marker({
 //     position: latlng,
 //     url: '/',
 //     animation: google.maps.Animation.DROP
 //   });
-  
+
 //   var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 //   marker.setMap(map);
 
@@ -28,7 +28,7 @@ $(document).ready(function(){/* google maps ------------------------------------
   $("#btnGen").click(function(e) {
     e.preventDefault();
     console.log($("form").serialize());
-    
+
     $.ajax({
       type : "GET",
       url : "/pathfind",
