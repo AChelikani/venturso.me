@@ -18,6 +18,10 @@ html,body{
     background-color: #A6FFA7;
 }
 
+.pinned {
+    background-color: #84CC85;
+}
+
 #main, #main>.row {
 	height:100%;
 }

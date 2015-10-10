@@ -42,13 +42,14 @@ $(document).ready(function(){/* google maps ------------------------------------
           for(act in jsonit['activityList']) {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
               console.log(jsonit['activityList'][act]['activity']);
-              liElem = "<li onclick='toggle(this)'' class='list-group-item";
-              // console.log(jsonit['activityList'][act]['activity']);
-              // console.log(jsonit['itinerary']);
-              if($.inArray(jsonit['activityList'][act]['activity'], jsonit['itinerary']) >= 0) {
-                liElem += " selected";
+              
+              liElem = $("<li onclick='toggle(this)'' class='list-group-item'>"+jsonit['activityList'][act]['activity']+"</li>");
+              if(jsonit[jsonit['activityList'][act]['pinned']]) {
+                liElem.addClass("pinned");
               }
-              liElem += "'>"+jsonit['activityList'][act]['activity']+"</li>";
+              else if($.inArray(jsonit['activityList'][act]['activity'], jsonit['itinerary']) >= 0) {
+                liElem.addClass("selected");
+              }
               $("#activityList").append(liElem);
 
             }
@@ -59,12 +60,16 @@ $(document).ready(function(){/* google maps ------------------------------------
 
   });
 
+  $(".list-group-item").click(function() {
+    console.log("yo");
+  });
+
 });
 
 // I love mixing jquery and javascript in the same file
 function toggle(element) {
   if (element.className == "list-group-item") {
-    element.className += " selected";
+    element.className += " pinned";
   }
   else {
     element.className = "list-group-item";
