@@ -36,6 +36,7 @@ $(document).ready(function(){/* google maps ------------------------------------
       // data: JSON.stringify(data, null, '\t'),
       // contentType: 'application/json;charset=UTF-8',
       success: function(result) {
+          $("#activityList").html("");
           jsonit = JSON.parse(result);
           console.log(jsonit);
           for(act in jsonit['activityList']) {
