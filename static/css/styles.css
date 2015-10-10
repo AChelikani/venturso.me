@@ -38,10 +38,9 @@ html,body{
 
 #map-canvas {
     padding-top: 10px;
-      width:100%;
+    width:100%;
     height:100%;
     bottom:0;
-    overflow:hidden;
 }
 
 .form-control{

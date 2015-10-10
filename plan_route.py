@@ -7,7 +7,7 @@ import operator
 
 def distance(start_lat, start_lng, end_lat, end_lng):
 	# Found at http://www.geodatasource.com/developers/javascript and modified
-    # Units: miles
+	# Units: miles
 	radlat1 = math.pi * start_lat / 180
 	radlat2 = math.pi * end_lat / 180
 	radlng1 = math.pi * start_lng / 180
@@ -37,14 +37,17 @@ def make_itinerary(start_lat, start_lng, start_time, end_lat, end_lng, end_time)
 	current_time = start_time
 	lat, lng = start_lat, start_lng
 
-    activities = api.pollHereAttractions(lat, lng)
-    distance_scaling = api.pollHereTravelTime(start_lat, start_lng, end_lat, end_lng)
-    #print activities
+	activities = api.pollHereAttractions(lat, lng)
+
+	distance_scaling = api.pollHereTravelTime(start_lat, start_lng, end_lat, end_lng)
+
+	#print activities
+
 	# Main loop
     while (end_time - current_time) > time_to_end(lat, lng, end_lat, end_lng) and len(activities) > 0:
 		best_score = -100 # set to lowest score
 		best_activity = "null"
-
+		travel_time = api.pollHereTravelTime(lat, lng, end_lat, end_lng)
 		for activity in activities:
 			#print (activity.name, travel_time, best_activity)
 			if end_time - current_time > travel_time + activity.duration():
@@ -56,7 +59,7 @@ def make_itinerary(start_lat, start_lng, start_time, end_lat, end_lng, end_time)
 		if best_activity == "null": break
 		current_time = add_transportation(itinerary, current_time, lat, lng, best_activity.lat, best_activity.lng)
 		itinerary.append(best_activity)
-		print itinerary
+		#print itinerary
 		activities.remove(best_activity)
 		current_time += best_activity.duration()
 		lat,lng = best_activity.lat, best_activity.lng
@@ -64,6 +67,9 @@ def make_itinerary(start_lat, start_lng, start_time, end_lat, end_lng, end_time)
 	add_transportation(itinerary, current_time, lat, lng, end_lat, end_lng)
 
 	return itinerary
+
+def get_itinerary_as_json(start_lat, start_lng, start_time, end_lat, end_lng, end_time):
+	return jsonify(make_itinerary(start_lat, starprintt_lng, start_time, end_lat, end_lng, end_time))
 		
 		#update(current_location, current_time)
 

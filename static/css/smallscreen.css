@@ -141,8 +141,24 @@ html,body{
   padding: 15px 0px 0px 15px;
 }
 
-#activityList li.selected {
+
+#activityList li.pinned {
   background-color:#42c651;
   color:#fff;
   border: 1px solid #2cb73c;
+}
+
+#activityList li.selected {
+  background-color:#eee;
+  color: #2cb73c;
+  border: 1px solid #2cb73c;
+}
+
+.list-group-item {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
