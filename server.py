@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask import request
+import json
 app = Flask(__name__)
 
 # Splash page!
@@ -33,7 +34,10 @@ def path_find():
 	
 	
 
-	return "{'activityList': [{activity: 'Eiffel Tower',latitude: lat,longitude: long,type: 'attraction'},{activity: 'Le Louvre',latitude: lat,longitude: long,type: 'attraction'},{activity: 'Best Paris Baguettes',latitude: lat,longitude: long,type: 'food'},{activity: 'Uber1',latitude: lat,longitude: long,type: 'transportation'},{activity: 'Uber2',latitude: lat,longitude: long,type: 'transportation'}],'itinerary': ['Eiffel Tower', 'Uber1', 'Best Paris Baguettes', 'Uber2', 'Le Louvre']}"
+	# jsonJunk = {'activityList': [{activity: 'Eiffel Tower',latitude: 'lat',longitude: 'lon',type: 'attraction'},{activity: 'Le Louvre',latitude: 'lat',longitude: 'lon',type: 'attraction'},{activity: 'Best Paris Baguettes',latitude: 'lat',longitude: 'lon',type: 'food'},{activity: 'Uber1',latitude: 'lat',longitude: 'lon',type: 'transportation'},{activity: 'Uber2',latitude: 'lat',longitude: 'lon',type: 'transportation'}],'itinerary': ['Eiffel Tower', 'Uber1', 'Best Paris Baguettes', 'Uber2', 'Le Louvre']}
+	jsonJunk = {'activityList': [{'activity': 'Eiffel Tower','latitude': 'lat','longitude': 'lon','type': 'attraction'},{'activity': 'Le Louvre','latitude': 'lat','longitude': 'lon','type': 'attraction'},{'activity': 'Best Paris Baguettes','latitude': 'lat','longitude': 'lon','type': 'food'},{'activity': 'Uber1','latitude': 'lat','longitude': 'lon','type': 'transportation'},{'activity': 'Uber2','latitude': 'lat','longitude': 'lon','type': 'transportation'},{'activity': 'Arc de Triumph','latitude': 'lat','longitude': 'lon','type': 'attraction'}],'itinerary': ['Eiffel Tower', 'Uber1', 'Best Paris Baguettes', 'Uber2', 'Le Louvre']}
+	print json.dumps(jsonJunk)
+	return json.dumps(jsonJunk)
 
 
 if __name__ == '__main__':

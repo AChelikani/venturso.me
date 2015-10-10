@@ -10,46 +10,41 @@
 
     <link href="{{ url_for('static',filename='css/styles.css') }}" rel="stylesheet">
 
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="http://js.api.here.com/v3/3.0/mapsjs-ui.css" />
-    <script src="{{ url_for('static',filename='map.js') }}" type="text/javascript" charset="utf-8"></script>
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+
   </head>
   <body>
 <!-- begin template -->
 
 <div class="inputbar">
-  <form class="form-inline" role="form">
+  <form id="formRoute" class="form-inline" role="form">
     <div class="form-group">
       <label for="start">Start Time:</label>
-      <input type="text" class="form-control" id="start">
+      <input type="text" class="form-control" name="fromtime" id="start">
     </div>
     <div class="form-group">
       <label for="end">End Time:</label>
-      <input type="text" class="form-control" id="end">
+      <input type="text" class="form-control" name="totime" id="end">
     </div>
     <div class="form-group">
       <label for="from">From:</label>
-      <input type="text" class="form-control" id="from">
+      <input type="text" class="form-control" name="from" id="from">
     </div>
     <div class="form-group">
       <label for="to">To:</label>
-      <input type="text" class="form-control" id="to">
+      <input type="text" class="form-control" name="to" id="to">
     </div>
-    <button class="btn btn-sml">Generate!</button>
+    <button class="btn btn-sml" id="btnGen">Generate!</button>
   </form>
 </div>
 
-<div class="container-fluid" id="main">
+<div class="container-fluid" id="main" style="visibility:hidden;">
   <div class="row">
     <div class="col-xs-5" id="left">
     
       <h2><center>Venues</center></h2>
-        <ul class="list-group">
-          <li onclick="toggle(this)" class="list-group-item">Item 1</li>
+        <ul class="list-group" id="activityList">
+<!--           <li onclick="toggle(this)" class="list-group-item">Item 1</li>
           <li onclick="toggle(this)" class="list-group-item">Item 2</li>
           <li onclick="toggle(this)" class="list-group-item">Item 3</li>
           <li onclick="toggle(this)" class="list-group-item">Item 4</li>
@@ -61,7 +56,7 @@
           <li onclick="toggle(this)" class="list-group-item">Item 10</li>
           <li onclick="toggle(this)" class="list-group-item">Item 11</li>
           <li onclick="toggle(this)" class="list-group-item">Item 12</li>
-          <li onclick="toggle(this)" class="list-group-item">Item 13</li>
+          <li onclick="toggle(this)" class="list-group-item">Item 13</li> -->
         </ul>
     </div>
 
@@ -69,22 +64,21 @@
 
   </div>
 </div>
+
+
 <!-- end template -->
 
   <!-- script references -->
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ url_for('static',filename='map.js') }}" type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
-    <script type="text/javascript"> 
-      function toggle(element) {
-        if (element.className == "list-group-item") {
-          element.className += " selected";
-        }
-        else {
-          element.className = "list-group-item";
-        }
-      }
-    </script>
 
   </body>
 </html>
