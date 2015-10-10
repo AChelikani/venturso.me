@@ -64,6 +64,55 @@ $(document).ready(function() {
           var defaultLayers = platform.createDefaultLayers();
           var map, ui, mapEvents, behavior;
 
+          function calculateRouteFromAtoB(platform, a, b) {
+            var router = platform.getRoutingService(),
+            routeRequestParams = {
+              mode: 'fastest;car',
+              representation: 'display',
+              routeattributes : 'waypoints,summary,shape,legs',
+              maneuverattributes: 'direction,action',
+              waypoint0: a, 
+              waypoint1: b  
+            };
+
+              router.calculateRoute(
+                routeRequestParams,
+                onSuccess,
+                onError
+              );
+          }
+
+          function onSuccess(result) {
+            var route = result.response.route[0];
+            addRouteShapeToMap(route);
+          }
+
+          function onError(error) {
+            alert("Oops!");
+          }
+
+          function addRouteShapeToMap(route){
+            var strip = new H.geo.Strip(),
+              routeShape = route.shape,
+              polyline;
+
+            routeShape.forEach(function(point) {
+              var parts = point.split(',');
+              strip.pushLatLngAlt(parts[0], parts[1]);
+            });
+
+            polyline = new H.map.Polyline(strip, {
+              style: {
+                lineWidth: 4,
+                strokeColor: 'rgba(0, 128, 255, 0.7)'
+              }
+            });
+            // Add the polyline to the map
+            map.addObject(polyline);
+            // And zoom to its bounding rectangle
+            map.setViewBounds(polyline.getBounds(), true);
+          }
+
           function initialize() {
             console.log("yo initialize here");
             locations = [];
@@ -88,12 +137,25 @@ $(document).ready(function() {
             mapEvents = new H.mapevents.MapEvents(map);
             behavior = new H.mapevents.Behavior(mapEvents);
 
+            var point1;
+            var point2;
+            var counter = 0;
+
             for(i = 0; i < itinerary.length; i ++) {
               if (itinerary[i].indexOf("Uber") == -1) {
                 var temp = itinerary[i];
                 var pos = names.indexOf(temp);
                 console.log(temp);
                 var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
+                if (counter == 0) {
+                  point1 = String(latlong[0]) + "," + String(latlong[1]);
+                  counter ++;
+                }
+                else {
+                  point2 = String(latlong[0]) + "," + String(latlong[1]);
+                  calculateRouteFromAtoB(platform, point1, point2);
+                  point2 = point1;
+                }
                 var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
                 map.addObject(marker);
               }
