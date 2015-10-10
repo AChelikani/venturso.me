@@ -66,10 +66,14 @@ $(document).ready(function() {
 
           function initialize() {
             console.log("yo initialize here");
-            jsonit['activityList']
-            // locations = localStorage.getItem("locations").split(",");
-            // names = localStorage.getItem("names").split(",");
-            // itinerary = localStorage.getItem("itinerary").split(",");
+            locations = [];
+            names = [];
+            itinerary = jsonit['itinerary'];
+            for(act in jsonit['activityList']) {
+              locations.push(jsonit['activityList'][act]['latitude']);
+              locations.push(jsonit['activityList'][act]['longitude']);
+              names.push(jsonit['activityList'][act]['activity']);
+            }
 
             map = new H.Map(
                 document.getElementById('map-canvas'),
@@ -84,16 +88,16 @@ $(document).ready(function() {
             mapEvents = new H.mapevents.MapEvents(map);
             behavior = new H.mapevents.Behavior(mapEvents);
 
-            // for(i = 0; i < itinerary.length; i ++) {
-            //   if (itinerary[i].indexOf("Uber") == -1) {
-            //     var temp = itinerary[i];
-            //     var pos = names.indexOf(temp);
-            //     console.log(temp);
-            //     var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
-            //     var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
-            //     map.addObject(marker);
-            //   }
-            // }
+            for(i = 0; i < itinerary.length; i ++) {
+              if (itinerary[i].indexOf("Uber") == -1) {
+                var temp = itinerary[i];
+                var pos = names.indexOf(temp);
+                console.log(temp);
+                var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
+                var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
+                map.addObject(marker);
+              }
+            }
 
           }
 
