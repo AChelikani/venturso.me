@@ -11,14 +11,7 @@ author: bootply.com
 
 html,body{
   	height:100%;
-}
-
-
-.inputbar {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 4px;
-    background-color: #33CCFF;
+    font-family: Helvetica, sans-serif;
 }
 
 .selected {
@@ -29,27 +22,85 @@ html,body{
 	height:100%;
 }
 
-
 #left {
 	height:100%;
 }
 
 #map-canvas {
     padding-top: 10px;
-	width:100%;
+	  width:100%;
     height:100%;
     bottom:0;
     overflow:hidden;
 }
 
-.form-control#start, .form-control#end {
-    width: 60px;
+.form-control{
+  border-radius: 0px;
+  border:none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+.form-control#start {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.form-control#end {
+  width: 100px;
+  margin-right: 30px;
 }
 
 .form-control#from, .form-control#to {
     width: 400px;
+    margin-left: 10px;
 }
 
-#to {
-    margin-right: 15px;
+
+.inputbar {
+  height: 80px;
+  background-color: #000;
+  padding: 22px 0px 0px 22px;
+  color: #fff;
+  margin-bottom: 50px;
+}
+
+label {
+  font-family: Helvetica;
+  text-decoration: none;
+}
+
+#btnGen{
+  margin-left: 30px;
+  border-radius: 0px;
+  border: 1px solid white;
+  background-color:#000;
+  color: #fff;
+  -webkit-transition-duration: 1000ms;
+  -moz-transition-duration: 1000ms;
+  -o-transition-duration: 1000ms;
+  transition-duration: 1000ms;
+}
+
+#btnGen:active, #btnGen:focus {
+    border: 1px solid white;
+    outline:0;
+}
+
+#btnGen:hover {
+  background-color:#fff;
+  color:#000;
+  -webkit-transition-duration: 1000ms;
+  -moz-transition-duration: 1000ms;
+  -o-transition-duration: 1000ms;
+  transition-duration: 1000ms;
+}
+
+#logo {
+  position:static;
+  margin-top: -6px;
+  margin-right: 5px;
+  float:right;
+  height: 50px;
 }
