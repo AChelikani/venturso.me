@@ -43,3 +43,15 @@ html,body{
     bottom:0;
     overflow:hidden;
 }
+
+.form-control#start, .form-control#end {
+    width: 100px;
+}
+
+.form-control#from, .form-control#to {
+    width: 200px;
+}
+
+#to {
+    margin-right: 15px;
+}
