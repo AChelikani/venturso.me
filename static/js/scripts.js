@@ -3,7 +3,6 @@ $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
-    console.log($("form").serialize()+"&pinList=[]");
     
     $.ajax({
       type : "GET",
