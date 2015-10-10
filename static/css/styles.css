@@ -35,21 +35,19 @@ html,body{
 }
 
 #map-canvas {
-	width:33.3333%;
-    height:calc(100% - 0);
-    position:absolute;
-    right:16px;
-    top:50px;
+    padding-top: 10px;
+	width:100%;
+    height:100%;
     bottom:0;
     overflow:hidden;
 }
 
 .form-control#start, .form-control#end {
-    width: 100px;
+    width: 60px;
 }
 
 .form-control#from, .form-control#to {
-    width: 200px;
+    width: 400px;
 }
 
 #to {
