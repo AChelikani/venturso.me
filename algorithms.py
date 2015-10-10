@@ -1,6 +1,6 @@
 import requests
 import time
-
+import random
 
 class LatLng:
     def __init__(self, lat, lng):
@@ -103,6 +103,21 @@ def pollHereAttractions(a, b):
     #print time.clock() - start
     return response
 
-shortlist = pollHereAttractions(52.5160,13.3779)
-i = build_itinerary(shortlist[:5], LatLng(52.5160,13.3779), LatLng(52,13))
+def test():
+    overall_start = time.clock()
+    print (overall_start)
+    timer_start = time.clock()
+    shortlist = pollHereAttractions(52.5160,13.3779)
+    print ("Get Attractions: %f" % (time.clock() - timer_start))
+    inds = range(len(shortlist))
+    random.shuffle(inds)
+    act_list = [shortlist[k] for k in inds[:5]]
+    timer_start = time.clock()
+    i = build_itinerary(act_list, LatLng(52.5160,13.3779), LatLng(52,13))
+    print ("Build Itinerary: %f" % (time.clock() - timer_start))
+    timer_start = time.clock()
+    print (score(i))
+    print ("Score: %f" % (time.clock() - timer_start))
+    print ("Total: %f" % (time.clock() - overall_start))
+    print time.clock()
 
