@@ -38,10 +38,10 @@ $(document).ready(function() {
               }
               liElem.on("click", function() {
                 // console.log("ay");
+                $(this).removeClass("selected");
                 if($(this).hasClass("pinned")) {
                   // console.log("Has pinned");
                   $(this).removeClass("pinned");
-                  $(this).removeClass("selected");
                 } else {
                   $(this).addClass("pinned");
                 }
