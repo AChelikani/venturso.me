@@ -30,6 +30,7 @@ $(document).ready(function() {
           $("#activityList").html("");
           jsonit = JSON.parse(result);
           // console.log(jsonit);
+          // Grab all the data for the venue checklist and add the elements
           for(act in jsonit['activityList']) {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
               // console.log(jsonit['activityList'][act]['activity']);
@@ -51,56 +52,57 @@ $(document).ready(function() {
                 }
               });
               $("#activityList").append(liElem);
-
             }
           }
 
+          // Bring in map and data overlay
           var platform = new H.service.Platform({
-        'app_id': 'N6MJW6UzW079S5ZZwcPl',
-        'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
-      });
+            'app_id': 'N6MJW6UzW079S5ZZwcPl',
+            'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
+          });
 
-      var defaultLayers = platform.createDefaultLayers();
-      var map;
-      var ui;
-      var mapEvents;
-      var behavior;
+          var defaultLayers = platform.createDefaultLayers();
+          var map, ui, mapEvents, behavior;
 
-      function initialize() {
-        locations = localStorage.getItem("locations").split(",");
-        names = localStorage.getItem("names").split(",");
-        itinerary = localStorage.getItem("itinerary").split(",");
+          function initialize() {
+            console.log("yo initialize here");
+            jsonit['activityList']
+            // locations = localStorage.getItem("locations").split(",");
+            // names = localStorage.getItem("names").split(",");
+            // itinerary = localStorage.getItem("itinerary").split(",");
 
-        map = new H.Map(
-            document.getElementById('map-canvas'),
-            defaultLayers.normal.map,
-            {
-              zoom: 10,
-              center: { lat: 34.13, lng: -118.12 }
-            });
+            map = new H.Map(
+                document.getElementById('map-canvas'),
+                defaultLayers.normal.map,
+                {
+                  zoom: 10,
+                  center: { lat: 34.13, lng: -118.12 }
+                });
 
-        ui = H.ui.UI.createDefault(map, defaultLayers);
+            ui = H.ui.UI.createDefault(map, defaultLayers);
 
-        mapEvents = new H.mapevents.MapEvents(map);
-        behavior = new H.mapevents.Behavior(mapEvents);
+            mapEvents = new H.mapevents.MapEvents(map);
+            behavior = new H.mapevents.Behavior(mapEvents);
 
-        for(i = 0; i < itinerary.length; i ++) {
-          if (itinerary[i].indexOf("Uber") == -1) {
-            var temp = itinerary[i];
-            var pos = names.indexOf(temp);
-            console.log(temp);
-            var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
-            var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
-            map.addObject(marker);
+            // for(i = 0; i < itinerary.length; i ++) {
+            //   if (itinerary[i].indexOf("Uber") == -1) {
+            //     var temp = itinerary[i];
+            //     var pos = names.indexOf(temp);
+            //     console.log(temp);
+            //     var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
+            //     var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
+            //     map.addObject(marker);
+            //   }
+            // }
+
           }
-        }
 
-      }
+          // window.addEventListener('load', initialize, false );
+          initialize();
 
+          }
+        });
 
-      window.addEventListener('load', initialize, false )
-      }
-    });
     $("#main").css("visibility","visible");
 
   });
