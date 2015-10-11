@@ -71,13 +71,15 @@ $(document).ready(function() {
             // Grab all the data for the venue checklist and add the elements
             for(act in jsonit['activityList']) {
               if(jsonit['activityList'][act]['type'] != 'transportation') {
-                console.log(jsonit['activityList'][act]['activity']);
+                console.log(jsonit['activityList'][act]['name']);
 
+                // Setting up the status of the venues when creating the list
                 liElem = $("<li class='list-group-item' id='"+jsonit['activityList'][act]['name']+"'>"+jsonit['activityList'][act]['name']+"</li>");
                 if(pinList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
                   // It's pinned
                   liElem.addClass("pinned");
                 } else if(jsonit['itinerary'].indexOf(jsonit['activityList'][act]['name']) >= 0) {
+                  // It's selected
                   liElem.addClass("selected");
                   var idstr = liElem.attr('id').split(/[^A-Za-z]/)[0];
                   $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
@@ -88,6 +90,8 @@ $(document).ready(function() {
                   // It's rejected
                   liElem.addClass("rejected");
                 } //else { /* It's not selected */ }
+                
+                // Add the event listener to toggle through states
                 liElem.on("click", function() {
                   var idstr = $(this).attr('id').split(/[^A-Za-z]/)[0];
                   if($(this).hasClass("selected")) {
