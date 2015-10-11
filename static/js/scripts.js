@@ -67,17 +67,33 @@ $(document).ready(function() {
 
             $("#activityList").html(""); // Clear previous itinerary
             jsonit = JSON.parse(result);
-            console.log(jsonit);
+            // console.log(jsonit);
             // Grab all the data for the venue checklist and add the elements
             for(act in jsonit['activityList']) {
               if(jsonit['activityList'][act]['type'] != 'transportation') {
-                console.log(jsonit['activityList'][act]['activity']);
+                // console.log(jsonit['activityList'][act]['name']);
+                console.log(jsonit['itinerary']);
+                // console.log(jsonit['itinerary'].indexOf(jsonit['activityList'][act]['name']));
+                
+                // Contains function to check if something is in the itinerary
+                function contains(arr, obj) {
+                    for (i in arr) {
+                        if (arr[i]['name'] === obj) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
 
+                // Setting up the status of the venues when creating the list
                 liElem = $("<li class='list-group-item' id='"+jsonit['activityList'][act]['name']+"'>"+jsonit['activityList'][act]['name']+"</li>");
                 if(pinList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
                   // It's pinned
+                  console.log("PINNED");
                   liElem.addClass("pinned");
-                } else if(jsonit['itinerary'].indexOf(jsonit['activityList'][act]['name']) >= 0) {
+                } else if(contains(jsonit['itinerary'], jsonit['activityList'][act]['name'])) {
+                  // It's selected
+                  console.log("SELECTED");
                   liElem.addClass("selected");
                   var idstr = liElem.attr('id').split(/[^A-Za-z]/)[0];
                   $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
@@ -86,8 +102,11 @@ $(document).ready(function() {
                       "<td>filler departure</td>");
                 } else if(rejList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
                   // It's rejected
+                  console.log("REJECTED");
                   liElem.addClass("rejected");
                 } //else { /* It's not selected */ }
+                
+                // Add the event listener to toggle through states
                 liElem.on("click", function() {
                   var idstr = $(this).attr('id').split(/[^A-Za-z]/)[0];
                   if($(this).hasClass("selected")) {
