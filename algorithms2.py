@@ -169,17 +169,38 @@ def pollHereAttractions(a, b):
 	relevant = r.json()["results"]["items"]
 	for x in range(len(relevant)):
 		name = relevant[x]["title"]
-		category = relevant[x]["category"]["title"]
+		category = relevant[x]["category"]["id"]
 		location = relevant[x]["position"]
 		rating = relevant[x]["averageRating"]
 		response.append(Attraction(name, LatLng(location[0],location[1]), category, rating))
 	#print time.clock() - start
 	return response
 
-def get_all_data(start_lat, start_lng, end_lat, end_lng):
+def pollHereAttractionsBox(start, end):
+	west = min(start.lng, end.lng) - 0.0005
+	east = max(start.lng, end.lng) + 0.0005
+	south = min(start.lat, end.lat) - 0.0001
+	north = max(start.lat, end.lat) + 0.0001
+	bbox = ",".join(map(str, [west,south,east,north]))
+	#start = time.clock()
+	response = []
+	url = "http://places.cit.api.here.com/places/v1/discover/explore%20?in=" + bbox + "&cat=sights-museums,leisure-outdoor,natural-geographical,going-out&app_id=N6MJW6UzW079S5ZZwcPl&app_code=FOkZLbFrMx77dDpomCs9ZQ&tf=plain"
+	print url
+	r = requests.get(url)
+	relevant = r.json()["results"]["items"]
+	for x in range(len(relevant)):
+		name = relevant[x]["title"]
+		category = relevant[x]["category"]["id"]
+		location = relevant[x]["position"]
+		rating = relevant[x]["averageRating"]
+		response.append(Attraction(name, LatLng(location[0],location[1]), category, rating))
+	#print time.clock() - start
+	return response
+
+def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, pin_list=[]):
 	start = LatLng(start_lat, start_lng)
 	end = LatLng(end_lat, end_lng)
-	all_attractions = pollHereAttractions(start.lat, start.lng)
+	all_attractions = pollHereAttractionsBox(start,end)
 	best_score = 0
 	best_itinerary = []
 
@@ -205,6 +226,8 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng):
 	output['itinerary'] = itinerary
 	return json.dumps(output)
 
-print(get_all_data(52.5160,13.3779,52,14))
+#print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
+#pollHereAttractionsBox(LatLng(34.137138, -118.122619),LatLng(34.149625, -118.150468))
+#pollHereTravelTime(52.5160,13.3779,52,14)
 #shortlist = pollHereAttractions(52.5160,13.3779)
 #a = build_itinerary(shortlist[:3], LatLng(52.5160,13.3779), LatLng(52,13), 0, 3600 * 6)

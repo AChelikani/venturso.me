@@ -167,8 +167,8 @@ $(document).ready(function() {
             var counter = 0;
 
             for(i = 0; i < itinerary.length; i ++) {
-              if (itinerary[i].indexOf("Uber") == -1) {
-                var temp = itinerary[i];
+              if (itinerary[i]["name"].indexOf("transport") == -1) {
+                var temp = itinerary[i]["name"];
                 var pos = names.indexOf(temp);
                 console.log(temp);
                 var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
