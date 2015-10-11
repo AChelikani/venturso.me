@@ -48,16 +48,21 @@ $(document).ready(function() {
                 liElem.addClass("pinned");
               } else if(jsonit['itinerary'].indexOf(jsonit['activityList'][act]['name']) >= 0) {
                 liElem.addClass("selected");
+                var idstr = liElem.attr('id').split(/[^A-Za-z]/)[0];
+                $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
+                    "<td>" + liElem.attr('id') + "</td>" +
+                    "<td>filler arrival</td>" +
+                    "<td>filler departure</td>");
               } else if(rejList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
                 // It's rejected
                 liElem.addClass("rejected");
               } //else { /* It's not selected */ }
               liElem.on("click", function() {
-                $(this).removeClass("selected");
-                // console.log("ay");
                 var idstr = $(this).attr('id').split(/[^A-Za-z]/)[0];
-                // var idstr = $(this).html();
-                if($(this).hasClass("pinned")) {
+                if($(this).hasClass("selected")) {
+                  $(this).removeClass("selected");
+                  $(this).addClass("pinned");
+                } else if($(this).hasClass("pinned")) {
                   // It's pinned. Cycle to rejected.
                   $("tbody #" + idstr).remove();
                   $(this).removeClass("pinned");
@@ -167,8 +172,8 @@ $(document).ready(function() {
             var counter = 0;
 
             for(i = 0; i < itinerary.length; i ++) {
-              if (itinerary[i].indexOf("Uber") == -1) {
-                var temp = itinerary[i];
+              if (itinerary[i]["name"].indexOf("transport") == -1) {
+                var temp = itinerary[i]["name"];
                 var pos = names.indexOf(temp);
                 console.log(temp);
                 var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];

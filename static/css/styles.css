@@ -36,7 +36,7 @@ html,body{
 }
 
 #main {
-  padding: 0px 250px;
+  padding: 0px 50px;
 }
 
 
@@ -124,8 +124,9 @@ html,body{
 
 
 #activityList {
+  overflow-x: hidden;
+  overflow-y: auto;
   margin-top: 15px;
-  overflow: auto;
   width: 80%;
   height: 80%;
   position: absolute;
@@ -137,8 +138,8 @@ html,body{
 }
 
 #activityList li {
-  width: 400px;
-  height: 50px;
+  width: 60%;
+  height: 15%;
   font-family: Helvetica;
   margin-bottom: 10px;
   color: #999;
