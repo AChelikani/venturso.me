@@ -280,7 +280,7 @@ def choose_candidate_subsets(activities, num_activities, num_subsets):
 
     return candidates
 
-def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, end_time, num_activities, num_subsets):
+def make_itinerary_subset(start_lat, start_lng, end_lat, end_lng, num_activities, num_subsets):
 	itinerary = [] # Final list of activities
 	candidates = [] # List of candidate activity lists
 	ordered_candidates = [] # list of ordered candidate itineraries followed by total scores
@@ -296,7 +296,7 @@ def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, en
 	itinerary = max(ordered_candidates, key = operator.itemgetter(1))
 	return ordered_candidates
 
-
+make_itinerary_subset(53.177, 13.799, 54, 15, 3, 10)
 
 
 
