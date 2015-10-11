@@ -3,7 +3,7 @@ $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
-    
+
 
     // Grab all the pinned venues we want to include in the journey
     console.log($("form").serialize());
@@ -26,16 +26,16 @@ $(document).ready(function() {
           var locations = [];
           var names = [];
           var itinerary = [];
-          
+
           $("#activityList").html("");
           jsonit = JSON.parse(result);
-          // console.log(jsonit);
+          console.log(jsonit);
           // Grab all the data for the venue checklist and add the elements
           for(act in jsonit['activityList']) {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
-              // console.log(jsonit['activityList'][act]['activity']);
+              console.log(jsonit['activityList'][act]['activity']);
 
-              liElem = $("<li class='list-group-item'>"+jsonit['activityList'][act]['activity']+"</li>");
+              liElem = $("<li class='list-group-item' id='"+ jsonit['activityList'][act]['activity']+ "'>"+jsonit['activityList'][act]['activity']+"</li>");
               if(jsonit[jsonit['activityList'][act]['pinned']]) {
                 liElem.addClass("pinned");
               } else if($.inArray(jsonit['activityList'][act]['activity'], jsonit['itinerary']) >= 0) {
@@ -44,11 +44,17 @@ $(document).ready(function() {
               liElem.on("click", function() {
                 // console.log("ay");
                 $(this).removeClass("selected");
+                var idstr = $(this).attr('id').split(" ")[0]
                 if($(this).hasClass("pinned")) {
-                  // console.log("Has pinned");
+                  // console.log($(this) + "Has pinned");
                   $(this).removeClass("pinned");
+                  $("tbody #" + idstr).remove();
                 } else {
                   $(this).addClass("pinned");
+                  $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
+                      "<td>" + $(this).attr('id') + "</td>" +
+                      "<td>filler arrival</td>" +
+                      "<td>filler departure</td>");
                 }
               });
               $("#activityList").append(liElem);

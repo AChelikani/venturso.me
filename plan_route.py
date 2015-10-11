@@ -75,6 +75,28 @@ def get_itinerary_as_json(start_lat, start_lng, start_time, end_lat, end_lng, en
 
 
 
+def order_candidate(candidate, start_lat, start_lng):
+    '''Returns candidate list of activities in chronological order along with a total score.'''
+    ordered_candidate = []
+    ordered_candidate_value = 100 # Depends on scoring system
+    current_lat = start_lat
+    current_lng = start_lng
+
+    while len(candidate) != 0:
+            min_distance = 1000000 # Ridiculously large number
+            for activity in candidate:
+                current_distance = distance(current_lat, current_lng, activity.lat, activity.lng)
+                if current_distance < min_distance:
+                    min_distance = current_distance
+                    best_activity = activity
+            ordered_candidate.append(best_activity)
+            current_lat = best_activity.lat
+            current_lng = best_activity.lng
+            del candidate[activity]
+            ordered_candidate_value -= current_distance + best_activity.value()
+
+    return (candidate, ordered_candidate_value)
+
 def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, end_time):
 	itinerary = []
     candidates = {} # key: candidate itinerary; value: total score
@@ -85,32 +107,10 @@ def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, en
 
     sorted(activities, key = lambda activity: activity.value())
 
-    # Get subsets
-    num_activities = 5
-    for act in num_activities:
-        act = 
-
     # Find best subset by computing traveling time
     for candidate in candidates: # candidate is an array of activities
-        current_lat = start_lat
-        current_lng = start_lng
-        min_distance = 1000000 # Ridiculously large number
-        ordered_candidate = []
-        ordered_activity_value = 100 # Depends on scoring system
-
-        while len(candidate) != 0:
-            for activity in candidate:
-                current_distance = distance(current_lat, current_lng, activity.lat, activity.lng)
-                if current_distance < min_distance:
-                    min_distance = current_distance
-                    best_activity = activity
-            ordered_candidate.append(best_activity)
-            current_lat = best_activity.lat
-            current_lng = best_activity.lng
-            del candidate[activity]
-            ordered_activity_value -= current_distance + best_activity.value()
-
-        ordered_candidates[ordered_candidate] = ordered_activity_value
+        dict_tuple = order_candidate(candidate)
+        ordered_candidates[dict_tuple[0]] = dict_tuple[1]
 
     itinerary = max(ordered_candidates.iteritems(), key=operator.itemgetter(1))[0]
 	return itinerary
