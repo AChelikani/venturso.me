@@ -1,9 +1,10 @@
-import api
-from api import Transportation
-from api import Attraction
+import algorithms2
+from algorithms2 import Transportation
+from algorithms2 import Attraction
 import json
 import math
 import operator
+import itertools
 
 def distance(start_lat, start_lng, end_lat, end_lng):
 	# Found at http://www.geodatasource.com/developers/javascript and modified
@@ -26,7 +27,7 @@ def add_transportation(array, current_time, start_lat, start_lng, end_lat, end_l
 	return current_time + t.duration
 
 def time_to_end(start_lat, start_lng, end_lat, end_lng):
-	return api.pollHereTravelTime(start_lat, start_lng, end_lat, end_lng)
+	return algorithms2.pollHereTravelTime(start_lat, start_lng, end_lat, end_lng)
 
 def jsonify(itinerary):
 	return "[" + ",".join(map(lambda x: x.to_json(), itinerary)) + "]"
@@ -37,17 +38,15 @@ def make_itinerary(start_lat, start_lng, start_time, end_lat, end_lng, end_time)
 	current_time = start_time
 	lat, lng = start_lat, start_lng
 
-	activities = api.pollHereAttractions(lat, lng)
+	activities = algorithms2.pollHereAttractions(lat, lng)
 
-	distance_scaling = api.pollHereTravelTime(start_lat, start_lng, end_lat, end_lng)
-
-	#print activities
+	distance_scaling = algorithms2.pollHereTravelTime(start_lat, start_lng, end_lat, end_lng)
 
 	# Main loop
-    while (end_time - current_time) > time_to_end(lat, lng, end_lat, end_lng) and len(activities) > 0:
+	while (end_time - current_time) > time_to_end(lat, lng, end_lat, end_lng) and len(activities) > 0:
 		best_score = -100 # set to lowest score
 		best_activity = "null"
-		travel_time = api.pollHereTravelTime(lat, lng, end_lat, end_lng)
+		travel_time = algorithms2.pollHereTravelTime(lat, lng, end_lat, end_lng)
 		for activity in activities:
 			#print (activity.name, travel_time, best_activity)
 			if end_time - current_time > travel_time + activity.duration():
@@ -73,9 +72,9 @@ def get_itinerary_as_json(start_lat, start_lng, start_time, end_lat, end_lng, en
 		
 		#update(current_location, current_time)
 
+# -----------
 
-
-def order_candidate(candidate, start_lat, start_lng):
+def order_candidates(candidate, start_lat, start_lng):
     '''Returns candidate list of activities in chronological order along with a total score.'''
     ordered_candidate = []
     ordered_candidate_value = 100 # Depends on scoring system
@@ -97,23 +96,40 @@ def order_candidate(candidate, start_lat, start_lng):
 
     return (candidate, ordered_candidate_value)
 
-def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, end_time):
+def choose_candidate_subsets(activities, num_activities, num_subsets):
+    '''Given a list of activities, finds the #(num_subsets) subsets of activities with the highest total scores.'''
+    candidates = [] # List of candidate activity lists with associated scores
+    subsets = [] # List of all possible subsets with associated scores
+
+    for combination in itertools.combinations(activities, num_activities):
+        subset_score = 100 # Depends on scoring system
+        for activity in combination:
+            subset_score += activity.base_score
+        subsets.append([list(combination), subset_score])
+
+    sorted(subsets, key = lambda subset: subset[1])
+    candidates = subsets[0:num_subsets]
+
+def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, end_time, num_activities, num_subsets):
 	itinerary = []
-    candidates = {} # key: candidate itinerary; value: total score
-    ordered_candidates = {} # key: ordered candidate itinerary; value: total modified score
+	candidates = []
+	ordered_candidates = {} # key: ordered candidate itinerary; value: total modified score
+	activities = algorithms2.pollHereAttractions((start_lat + end_lat)/2, (start_lng + end_lng)/2) # Query activities from the midpoint
 
-	lat, lng = start_lat, start_lng
-    activities = api.pollHereAttractions(lat, lng)
-
-    sorted(activities, key = lambda activity: activity.value())
+	sorted(activities, key = lambda activity: activity.base_score) # Sort activities by score
+	candidates = choose_candidate_subsets(activities, num_activities, num_subsets)
 
     # Find best subset by computing traveling time
-    for candidate in candidates: # candidate is an array of activities
-        dict_tuple = order_candidate(candidate)
-        ordered_candidates[dict_tuple[0]] = dict_tuple[1]
+	for candidate in candidates: # candidate is an array of activities
+		dict_tuple = order_candidates(candidate)
+		ordered_candidates[dict_tuple[0]] = dict_tuple[1]
 
-    itinerary = max(ordered_candidates.iteritems(), key=operator.itemgetter(1))[0]
+	itinerary = max(ordered_candidates.iteritems(), key=operator.itemgetter(1))[0]
 	return itinerary
+
+
+
+
 
 
 

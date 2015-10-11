@@ -4,6 +4,24 @@ import requests
 import time
 import json
 import random
+import math
+import operator
+import itertools
+
+def distance(start_lat, start_lng, end_lat, end_lng):
+	# Found at http://www.geodatasource.com/developers/javascript and modified
+	# Units: miles
+	radlat1 = math.pi * start_lat / 180
+	radlat2 = math.pi * end_lat / 180
+	radlng1 = math.pi * start_lng / 180
+	radlng2 = math.pi * end_lng / 180
+	theta = end_lng - start_lng
+	radtheta = math.pi * theta / 180
+
+	dist = math.sin(radlat1) * math.sin(radlat2) + math.cos(radlat1) * math.cos(radlat2) * math.cos(radtheta);
+	dist = math.acos(dist)
+	dist = dist * 180 * 60 * 1.1515 / math.pi
+	return dist
 
 class LatLng:
 	def __init__(self, lat, lng):
@@ -15,21 +33,6 @@ class LatLng:
 
 	def __str__(self):
 		return "(%f,%f)" % (self.lat, self.lng)
-
-	def distance(start_lat, start_lng, end_lat, end_lng):
-		# Found at http://www.geodatasource.com/developers/javascript and modified
-		# Units: miles
-		radlat1 = math.pi * start_lat / 180
-		radlat2 = math.pi * end_lat / 180
-		radlng1 = math.pi * start_lng / 180
-		radlng2 = math.pi * end_lng / 180
-		theta = end_lng - start_lng
-		radtheta = math.pi * theta / 180
-
-		dist = math.sin(radlat1) * math.sin(radlat2) + math.cos(radlat1) * math.cos(radlat2) * math.cos(radtheta);
-		dist = math.acos(dist)
-		dist = dist * 180 * 60 * 1.1515 / math.pi
-		return dist
 
 	def to_dict(self):
 		return { "lat":self.lat, "lng": self.lng}
@@ -229,5 +232,73 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 #print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
 #pollHereAttractionsBox(LatLng(34.137138, -118.122619),LatLng(34.149625, -118.150468))
 #pollHereTravelTime(52.5160,13.3779,52,14)
+
 #shortlist = pollHereAttractions(52.5160,13.3779)
 #a = build_itinerary(shortlist[:3], LatLng(52.5160,13.3779), LatLng(52,13), 0, 3600 * 6)
+
+
+
+
+
+
+
+def order_candidates(candidate, start_lat, start_lng):
+    '''Returns candidate list of activities in chronological order along with a total score.'''
+    ordered_candidate = []
+    ordered_candidate_value = 100 # Depends on scoring system
+    current = LatLng(start_lat, start_lng)
+
+    while len(candidate) != 0:
+            min_distance = 1000000 # Ridiculously large number
+            for activity in candidate:
+            	actlatlng = LatLng(activity.position.lat, activity.position.lng)
+                current_distance = current.dist_to(actlatlng)
+                if current_distance < min_distance:
+                    min_distance = current_distance
+                    best_activity = activity
+            ordered_candidate.append(best_activity)
+            current_lat = best_activity.position.lat
+            current_lng = best_activity.position.lng
+            candidate.remove(activity)
+            ordered_candidate_value -= current_distance + best_activity.base_score
+
+    return [ordered_candidate, ordered_candidate_value]
+
+def choose_candidate_subsets(activities, num_activities, num_subsets):
+    '''Given a list of activities, finds the #(num_subsets) subsets of activities with the highest total scores.'''
+    candidates = [] # List of candidate activity lists with associated scores
+    subsets = [] # List of all possible subsets with associated scores
+
+    for combination in itertools.combinations(activities, num_activities):
+        subset_score = 100 # Depends on scoring system
+        for activity in combination:
+            subset_score += activity.base_score
+        subsets.append([list(combination), subset_score])
+
+    sorted(subsets, key = lambda subset: subset[1])
+    candidates = subsets[0:num_subsets] # List of list of activities followed by scores
+
+    return candidates
+
+def make_itinerary_subset(start_lat, start_lng, start_time, end_lat, end_lng, end_time, num_activities, num_subsets):
+	itinerary = [] # Final list of activities
+	candidates = [] # List of candidate activity lists
+	ordered_candidates = [] # list of ordered candidate itineraries followed by total scores
+	activities = pollHereAttractions((start_lat + end_lat)/2, (start_lng + end_lng)/2) # Query activities from the midpoint
+
+	sorted(activities, key = lambda activity: activity.base_score) # Sort activities by score
+	candidates = choose_candidate_subsets(activities, num_activities, num_subsets)
+
+    # Find best subset by computing traveling time
+	for candidate in candidates: # candidate[0] is an array of activities
+		ordered_candidates.append(order_candidates(candidate[0], start_lat, start_lng))
+
+	itinerary = max(ordered_candidates, key = operator.itemgetter(1))
+	return ordered_candidates
+
+
+
+
+
+
+
