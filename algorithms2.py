@@ -202,7 +202,7 @@ def pollHereAttractionsBox(start, end):
 
 def to_list(s):
 	if len(s) < 2: return []
-	part = s[1:-1]
+	part = s[1:-1].replace("%20"," ")
 	if part == "": return []
 	return part.split(",")
 
@@ -216,7 +216,7 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 	best_score = 0
 	best_itinerary = []
 
-	output = {}
+	output = {"init_time":start_time}
 	
 	mode = "random"
 
@@ -236,10 +236,10 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 	else:
 		#print (end_time, start_time, (end_time - start_time)//7200 )
 		#print (pin_list, reject_list)
-		poss_itineraries = pick_best(all_attractions, pin_list, reject_list, (end_time - start_time)//7200 - len(pin_list))
+		poss_itineraries = pick_best(all_attractions, pin_list, reject_list, (end_time - start_time)//7200 - 1 - len(pin_list))
 		#print (poss_itineraries)
 		for shortlist in poss_itineraries:
-			itn = build_itinerary(shortlist, start, end, 0, 3600 * 6)
+			itn = build_itinerary(shortlist, start, end, start_time, end_time)
 			itn_score = score(itn)
 			if itn_score > best_score:
 				best_score = itn_score

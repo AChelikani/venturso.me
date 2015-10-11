@@ -2,6 +2,18 @@ var start_lat //= 34.137138
 var start_lng //= -118.122619
 var end_lat //= 34.149625
 var end_lng //= -118.150468
+var map;
+function name_to_id(my_name) {
+  return (my_name.split(/[^A-Za-z]/)).join("-")
+}
+
+
+function seconds_to_time(seconds) {
+    hours = Math.floor(seconds / 3600)
+    minutes = Math.floor((seconds - (hours * 3600))/60)
+    return minutes < 10? hours+":0"+minutes : hours+":"+minutes
+}
+
 $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
@@ -64,12 +76,15 @@ $(document).ready(function() {
         // data: JSON.stringify(data, null, '\t'),
         // contentType: 'application/json;charset=UTF-8',
         success: function(result) {
-
+          if (map) map.removeObjects(map.getObjects());
             $("#activityList").html(""); // Clear previous itinerary
             jsonit = JSON.parse(result);
             // console.log(jsonit);
             // Grab all the data for the venue checklist and add the elements
+            
+            
             for(act in jsonit['activityList']) {
+              $("tbody #" + name_to_id(jsonit['activityList'][act]['name'])+"TABLE").remove();
               if(jsonit['activityList'][act]['type'] != 'transportation') {
                 // console.log(jsonit['activityList'][act]['name']);
                 console.log(jsonit['itinerary']);
@@ -84,22 +99,30 @@ $(document).ready(function() {
                     }
                     return false;
                 }
+                function add_to_table(idstr) {
+                  /*for (i in jsonit['itinerary']) {
+                    if (name_to_id(jsonit['itinerary'][i]["name"]) == idstr) {
+                      $("#itinerary tbody").append("<tr id='" + idstr+"TABLE" + "'>" +
+                        "<td>" + jsonit['itinerary'][i]["name"] + "</td>" +
+                        "<td>"+ jsonit['itinerary'][i]["end_time"] + "</td>" +
+                        "<td>"+ jsonit['itinerary'][i]["end_time"] + "</td>");
+                    }
+                  }*/ 
+                }
 
                 // Setting up the status of the venues when creating the list
-                liElem = $("<li class='list-group-item' id='"+jsonit['activityList'][act]['name']+"'>"+jsonit['activityList'][act]['name']+"</li>");
+
+                liElem = $("<li class='list-group-item' id='"+name_to_id(jsonit['activityList'][act]['name'])+"'>"+jsonit['activityList'][act]['name']+"</li>");
                 if(pinList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
                   // It's pinned
                   console.log("PINNED");
                   liElem.addClass("pinned");
+                  add_to_table(name_to_id(jsonit['activityList'][act]['name']));
                 } else if(contains(jsonit['itinerary'], jsonit['activityList'][act]['name'])) {
                   // It's selected
                   console.log("SELECTED");
                   liElem.addClass("selected");
-                  var idstr = liElem.attr('id').split(/[^A-Za-z]/)[0];
-                  $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
-                      "<td>" + liElem.attr('id') + "</td>" +
-                      "<td>filler arrival</td>" +
-                      "<td>filler departure</td>");
+                  add_to_table(name_to_id(jsonit['activityList'][act]['name']));
                 } else if(rejList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
                   // It's rejected
                   console.log("REJECTED");
@@ -108,37 +131,44 @@ $(document).ready(function() {
                 
                 // Add the event listener to toggle through states
                 liElem.on("click", function() {
-                  var idstr = $(this).attr('id').split(/[^A-Za-z]/)[0];
+                  var idstr = $(this).attr('id');
                   if($(this).hasClass("selected")) {
                     $(this).removeClass("selected");
                     $(this).addClass("pinned");
                   } else if($(this).hasClass("pinned")) {
                     // It's pinned. Cycle to rejected.
-                    $("tbody #" + idstr).remove();
+                    console.log("tr #" + idstr+"TABLE")
+                    $("tbody #" + idstr+"TABLE").remove();
                     $(this).removeClass("pinned");
                     $(this).addClass("rejected");
                   } else if($(this).hasClass("rejected")) {
                     $(this).removeClass("rejected");
                   } else {
                     $(this).addClass("pinned");
-                    $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
-                        "<td>" + $(this).attr('id') + "</td>" +
-                        "<td>filler arrival</td>" +
-                        "<td>filler departure</td>");
+                    add_to_table(idstr);
                   }
                 });
                 $("#activityList").append(liElem);
               }
             }
+            var start_time = jsonit['init_time']
+            console.log(start_time)
+            for (i in jsonit['itinerary']) {
+              console.log(jsonit['itinerary'][i])
+              var text =jsonit['itinerary'][i]["name"]
+              if (text.indexOf('transport') < 0) {
 
-            // Bring in map and data overlay
-            /*var platform = new H.service.Platform({
-              'app_id': 'N6MJW6UzW079S5ZZwcPl',
-              'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
-            });*/
+                idstr = name_to_id(jsonit['itinerary'][i]["name"])
+                $("#itinerary tbody").append("<tr id='" + idstr+"TABLE" + "'>" +
+                  "<td>" + text + "</td>" +
+                  "<td>"+ seconds_to_time(start_time) + "</td>" +
+                  "<td>"+ seconds_to_time(parseInt(jsonit['itinerary'][i]["end_time"])) + "</td>");
+              }
+              start_time = parseInt(jsonit['itinerary'][i]["end_time"])
+            }
 
             var defaultLayers = platform.createDefaultLayers();
-            var map, ui, mapEvents, behavior;
+            var ui, mapEvents, behavior;
 
             function calculateRouteFromAtoB(platform, a, b) {
               var router = platform.getRoutingService(),
@@ -204,18 +234,20 @@ $(document).ready(function() {
               console.log(locations);
               console.log(names);
 
-              map = new H.Map(
-                  document.getElementById('map-canvas'),
-                  defaultLayers.normal.map,
-                  {
-                    zoom: 10,
-                    center: { lat: 34.13, lng: -118.12 }
-                  });
+              if (map == null) {
+                map = new H.Map(
+                    document.getElementById('map-canvas'),
+                    defaultLayers.normal.map,
+                    {
+                      zoom: 10,
+                      center: { lat: (start_lat + end_lat)/2, lng: (start_lng + end_lng)/2 }
+                    });
 
-              ui = H.ui.UI.createDefault(map, defaultLayers);
+                ui = H.ui.UI.createDefault(map, defaultLayers);
 
-              mapEvents = new H.mapevents.MapEvents(map);
-              behavior = new H.mapevents.Behavior(mapEvents);
+                mapEvents = new H.mapevents.MapEvents(map);
+                behavior = new H.mapevents.Behavior(mapEvents);
+              }
 
               var point1;
               var point2;
@@ -237,6 +269,7 @@ $(document).ready(function() {
                     calculateRouteFromAtoB(platform, point1, point2);
                     point2 = point1;
                   }
+
                   var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
                   map.addObject(marker);
                 }
@@ -248,6 +281,8 @@ $(document).ready(function() {
             initialize();
 
             }
+
+
           });
 
       }
