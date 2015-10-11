@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
 	$("#genItinerary").click(function(e) {
 		var currentLine = 20;
@@ -35,7 +36,6 @@ $(document).ready(function() {
               start_time = parseInt(jsonit['itinerary'][i]["end_time"])
             }
 		}
-
 		doc.save("itinerary.pdf");
 	});
 

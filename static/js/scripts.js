@@ -18,7 +18,7 @@ $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
-
+    $("#main").css("visibility","hidden");
     // Bring in map and data overlay
     var platform = new H.service.Platform({
       'app_id': 'N6MJW6UzW079S5ZZwcPl',
@@ -69,6 +69,7 @@ $(document).ready(function() {
 
     // Generate a new itinerary\
     function generate_everything(start_lat, start_lng, end_lat, end_lng) {
+      $("#loading-wrapper").removeClass("hidden")
       $.ajax({
         type : "GET",
         url : "/pathfind",
@@ -289,7 +290,11 @@ $(document).ready(function() {
               calculateRouteFromAtoB(platform,point1, end_lat+","+end_lng);   
               var marker = new H.map.Marker({ lat: end_lat, lng: end_lng}, 
                                             {icon: new H.map.Icon("static/marker.png")});
-              map.addObject(marker);      
+              map.addObject(marker); 
+
+              $("#loading-wrapper").addClass("hidden")  
+
+              $("#main").css("visibility","visible");   
             }
 
             // window.addEventListener('load', initialize, false );
@@ -302,7 +307,7 @@ $(document).ready(function() {
 
       }
 
-    $("#main").css("visibility","visible");
+    
 
   });
 
