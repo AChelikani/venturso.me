@@ -172,7 +172,7 @@ $(document).ready(function() {
             var counter = 0;
 
             for(i = 0; i < itinerary.length; i ++) {
-              if (itinerary[i].indexOf("Uber") == -1) {
+              if (itinerary[i].indexOf("transport") == -1) {
                 var temp = itinerary[i];
                 var pos = names.indexOf(temp);
                 console.log(temp);
