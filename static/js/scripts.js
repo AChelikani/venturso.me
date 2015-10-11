@@ -9,8 +9,8 @@ function name_to_id(my_name) {
 
 
 function seconds_to_time(seconds) {
-    hours = Math.floor(seconds / 3600)
-    minutes = Math.floor((seconds - (hours * 3600))/60)
+    hours = Math.floor(seconds / 3600) % 24
+    minutes = Math.floor((seconds % 3600)/60)
     return minutes < 10? hours+":0"+minutes : hours+":"+minutes
 }
 
@@ -77,6 +77,7 @@ $(document).ready(function() {
         // contentType: 'application/json;charset=UTF-8',
         success: function(result) {
           if (map) map.removeObjects(map.getObjects());
+          document.getElementById('itinerary').innerHTML = '<tbody><tr id="header-row"><th>Location</th><th>Arrival Time</th><th>Departure Time</th></tr></tbody>'
             $("#activityList").html(""); // Clear previous itinerary
             jsonit = JSON.parse(result);
             // console.log(jsonit);
@@ -84,7 +85,6 @@ $(document).ready(function() {
             
             
             for(act in jsonit['activityList']) {
-              $("tbody #" + name_to_id(jsonit['activityList'][act]['name'])+"TABLE").remove();
               if(jsonit['activityList'][act]['type'] != 'transportation') {
                 // console.log(jsonit['activityList'][act]['name']);
                 console.log(jsonit['itinerary']);
@@ -261,6 +261,9 @@ $(document).ready(function() {
                   var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
                   if (counter == 0) {
                     point1 = String(latlong[0]) + "," + String(latlong[1]);
+                    var marker = new H.map.Marker({ lat: start_lat, lng: start_lng}, 
+                                                  {icon: new H.map.Icon("static/marker.png")});
+                    map.addObject(marker);
                     calculateRouteFromAtoB(platform, start_lat+","+start_lng,point1);
                     counter ++;
                   }
@@ -274,7 +277,10 @@ $(document).ready(function() {
                   map.addObject(marker);
                 }
               }
-              calculateRouteFromAtoB(platform,point1, end_lat+","+end_lng);         
+              calculateRouteFromAtoB(platform,point1, end_lat+","+end_lng);   
+              var marker = new H.map.Marker({ lat: end_lat, lng: end_lng}, 
+                                            {icon: new H.map.Icon("static/marker.png")});
+              map.addObject(marker);      
             }
 
             // window.addEventListener('load', initialize, false );

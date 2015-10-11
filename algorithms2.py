@@ -236,7 +236,7 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 	else:
 		#print (end_time, start_time, (end_time - start_time)//7200 )
 		#print (pin_list, reject_list)
-		poss_itineraries = pick_best(all_attractions, pin_list, reject_list, (end_time - start_time)//7200 - 1 - len(pin_list))
+		poss_itineraries = pick_best(all_attractions, pin_list, reject_list, (end_time - start_time - 3600)//7200 - len(pin_list))
 		#print (poss_itineraries)
 		for shortlist in poss_itineraries:
 			itn = build_itinerary(shortlist, start, end, start_time, end_time)
