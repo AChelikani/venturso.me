@@ -24,6 +24,7 @@ html,body{
 
 #main>.row{
   margin-bottom:40px;
+  display:block;
 }
 
 #map-container {
@@ -129,13 +130,16 @@ html,body{
 
 
 #activityList {
+  overflow: auto;
+  width: 80%;
+  height: 80%;
   position: absolute;
-  left: 50%;
   margin-top: 15px;
-  -webkit-transform: translate(-50%, 0%);
-  -moz-transform: translate(-50%, 0%);
-  -o-transform: translate(-50%, 0%);
-  transform: translate(-50%, 0%);
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align:center;
 }
 
 #activityList li {
@@ -147,6 +151,7 @@ html,body{
   font-weight: bold;
   border-radius: 0;
   padding: 15px 0px 0px 15px;
+  display: inline-block;
 }
 
 
@@ -175,4 +180,32 @@ html,body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+#genItinerary {
+  margin-top: 20px;
+  width: 150px;
+  padding: 10px;
+  border-radius: 0px;
+  background-color:#fff;
+  color:#000;
+  border: 1px solid #000;
+  text-transform: uppercase;
+  -webkit-transition-duration: 1000ms;
+  -moz-transition-duration: 1000ms;
+  -o-transition-duration: 1000ms;
+  transition-duration: 1000ms;
+}
+
+#genItinerary:hover {
+  background-color:#000;
+  color:#fff;
+  -webkit-transition-duration: 1000ms;
+  -moz-transition-duration: 1000ms;
+  -o-transition-duration: 1000ms;
+  transition-duration: 1000ms;
+}
+
+#genItinerary:focus, #genItinerary:active {
+  outline:0;
 }
