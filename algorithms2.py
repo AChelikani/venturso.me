@@ -188,7 +188,7 @@ def pollHereAttractionsBox(start, end):
 	#start = time.clock()
 	response = []
 	url = "http://places.cit.api.here.com/places/v1/discover/explore%20?in=" + bbox + "&cat=sights-museums,leisure-outdoor,natural-geographical,going-out&app_id=N6MJW6UzW079S5ZZwcPl&app_code=FOkZLbFrMx77dDpomCs9ZQ&tf=plain"
-	print url
+	#print url
 	r = requests.get(url)
 	relevant = r.json()["results"]["items"]
 	for x in range(len(relevant)):
@@ -208,6 +208,19 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 	best_itinerary = []
 
 	output = {}
+	obfuscated_shortlists = make_itinerary_subset(all_attractions, start_lat, start_lng, end_lat, end_lng, 3, 5)
+	'''
+	for i in obfuscated_shortlists:
+		shortlist = i[0]
+		itn = build_itinerary(shortlist, start, end, 0, 3600 * 6)
+		itn_score = score(itn)
+		if itn_score > best_score:
+			best_score = itn_score
+			best_itinerary = itn
+		
+	print (map(lambda x:x.to_json(), obfuscated_shortlists[0]))
+	best_itinerary = build_itinerary(obfuscated_shortlists[0], start, end, 0, 3600 * 6)
+	'''
 	for i in range (3):
 		inds = range(len(all_attractions))
 		random.shuffle(inds)
@@ -217,6 +230,7 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 		if itn_score > best_score:
 			best_score = itn_score
 			best_itinerary = itn
+	
 
 	activity_list = map(lambda x:x.to_dict(), all_attractions)
 	itinerary = []
@@ -235,11 +249,6 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 
 #shortlist = pollHereAttractions(52.5160,13.3779)
 #a = build_itinerary(shortlist[:3], LatLng(52.5160,13.3779), LatLng(52,13), 0, 3600 * 6)
-
-
-
-
-
 
 
 def order_candidates(candidate, start_lat, start_lng):
@@ -275,11 +284,29 @@ def choose_candidate_subsets(activities, num_activities, num_subsets):
             subset_score += activity.base_score
         subsets.append([list(combination), subset_score])
 
-    sorted(subsets, key = lambda subset: subset[1])
+    subsets.sort(key = lambda subset: subset[1])
     candidates = subsets[0:num_subsets] # List of list of activities followed by scores
 
     return candidates
 
+def make_itinerary_subset(activities, start_lat, start_lng, end_lat, end_lng, num_activities, num_subsets):
+	
+	itinerary = [] # Final list of activities
+	candidates = [] # List of candidate activity lists
+	ordered_candidates = [] # list of ordered candidate itineraries followed by total scores
+	#activities = pollHereAttractionsBox(LatLng(start_lat, end_lat), LatLng(start_lng, end_lng)) # Query activities from the midpoint
+
+	activities.sort(key = lambda activity: activity.base_score) # Sort activities by score
+	candidates = choose_candidate_subsets(activities, num_activities, num_subsets)
+
+    # Find best subset by computing traveling time
+	for candidate in candidates: # candidate[0] is an array of activities
+		ordered_candidates.append(order_candidates(candidate[0], start_lat, start_lng))
+
+	itinerary = max(ordered_candidates, key = operator.itemgetter(1))
+	return itinerary
+
+'''
 def make_itinerary_subset(start_lat, start_lng, end_lat, end_lng, num_activities, num_subsets):
 	itinerary = [] # Final list of activities
 	candidates = [] # List of candidate activity lists
@@ -295,10 +322,10 @@ def make_itinerary_subset(start_lat, start_lng, end_lat, end_lng, num_activities
 
 	itinerary = max(ordered_candidates, key = operator.itemgetter(1))
 	return ordered_candidates
+'''
+#print(make_itinerary_subset(53.177, 13.799, 54, 15, 3, 10))
 
-make_itinerary_subset(53.177, 13.799, 54, 15, 3, 10)
-
-
+print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
 
 
 
