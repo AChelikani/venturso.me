@@ -200,7 +200,16 @@ def pollHereAttractionsBox(start, end):
 	#print time.clock() - start
 	return response
 
-def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, pin_list=[]):
+def to_list(s):
+	if len(s) < 2: return []
+	part = s[1:-1]
+	if part == "": return []
+	return part.split(",")
+
+def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, pin_list='[]', reject_list='[]'):
+	pin_list = to_list(pin_list)
+	print pin_list
+	reject_list = to_list(reject_list)
 	start = LatLng(start_lat, start_lng)
 	end = LatLng(end_lat, end_lng)
 	all_attractions = pollHereAttractionsBox(start,end)
@@ -208,8 +217,14 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 	best_itinerary = []
 
 	output = {}
-	obfuscated_shortlists = make_itinerary_subset(all_attractions, start_lat, start_lng, end_lat, end_lng, 3, 5)
-	'''
+	
+	mode = "random"
+
+	if mode != "random":
+		obfuscated_shortlists = make_itinerary_subset(all_attractions, start_lat, start_lng, end_lat, end_lng, 3, 5)
+
+		best_itinerary = build_itinerary(obfuscated_shortlists[0], start, end, 0, 3600 * 6)
+		'''
 	for i in obfuscated_shortlists:
 		shortlist = i[0]
 		itn = build_itinerary(shortlist, start, end, 0, 3600 * 6)
@@ -217,21 +232,19 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 		if itn_score > best_score:
 			best_score = itn_score
 			best_itinerary = itn
-		
-	print (map(lambda x:x.to_json(), obfuscated_shortlists[0]))
-	best_itinerary = build_itinerary(obfuscated_shortlists[0], start, end, 0, 3600 * 6)
 	'''
-	for i in range (3):
-		inds = range(len(all_attractions))
-		random.shuffle(inds)
-		shortlist = [all_attractions[i] for i in inds[:3]]
-		itn = build_itinerary(shortlist, start, end, 0, 3600 * 6)
-		itn_score = score(itn)
-		if itn_score > best_score:
-			best_score = itn_score
-			best_itinerary = itn
+	else:
+		#print (end_time, start_time, (end_time - start_time)//7200 )
+		#print (pin_list, reject_list)
+		poss_itineraries = pick_best(all_attractions, pin_list, reject_list, (end_time - start_time)//7200 - len(pin_list))
+		#print (poss_itineraries)
+		for shortlist in poss_itineraries:
+			itn = build_itinerary(shortlist, start, end, 0, 3600 * 6)
+			itn_score = score(itn)
+			if itn_score > best_score:
+				best_score = itn_score
+				best_itinerary = itn
 	
-
 	activity_list = map(lambda x:x.to_dict(), all_attractions)
 	itinerary = []
 	for i in best_itinerary:
@@ -243,7 +256,35 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 	output['itinerary'] = itinerary
 	return json.dumps(output)
 
-#print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
+def score_list(g):
+	score = 0
+	cats = {}
+	for i in g:
+		score += i.base_score
+		if cats.get(i.cat):
+			score -= 10 * cats[i.cat]
+			cats[i.cat] += 1
+		else: cats[i.cat] = 1
+	return score
+def pick_best(all_activities, pinned, rejected, num) :
+	candidates = []
+	picked = []
+	for i in all_activities:
+		if i.name in pinned:
+			picked.append(i)
+		elif i.name not in rejected:
+			candidates.append(i)
+	if num <= 0: return [picked]
+	longlist = []
+	candidates.sort(key=lambda x: x.base_score, reverse=True)
+	inds = range(min(len(candidates),num * 2))
+	for i in range(10):
+		longlist.append(picked + [candidates[a] for a in inds[:num]])
+	longlist.sort(key=lambda x:score_list(x), reverse=True)
+	return longlist[:3]
+
+
+
 #pollHereAttractionsBox(LatLng(34.137138, -118.122619),LatLng(34.149625, -118.150468))
 #pollHereTravelTime(52.5160,13.3779,52,14)
 
@@ -252,42 +293,42 @@ def get_all_data(start_lat, start_lng, end_lat, end_lng, start_time, end_time, p
 
 
 def order_candidates(candidate, start_lat, start_lng):
-    '''Returns candidate list of activities in chronological order along with a total score.'''
-    ordered_candidate = []
-    ordered_candidate_value = 100 # Depends on scoring system
-    current = LatLng(start_lat, start_lng)
+	'''Returns candidate list of activities in chronological order along with a total score.'''
+	ordered_candidate = []
+	ordered_candidate_value = 100 # Depends on scoring system
+	current = LatLng(start_lat, start_lng)
 
-    while len(candidate) != 0:
-            min_distance = 1000000 # Ridiculously large number
-            for activity in candidate:
-            	actlatlng = LatLng(activity.position.lat, activity.position.lng)
-                current_distance = current.dist_to(actlatlng)
-                if current_distance < min_distance:
-                    min_distance = current_distance
-                    best_activity = activity
-            ordered_candidate.append(best_activity)
-            current_lat = best_activity.position.lat
-            current_lng = best_activity.position.lng
-            candidate.remove(activity)
-            ordered_candidate_value -= current_distance + best_activity.base_score
+	while len(candidate) != 0:
+		min_distance = 1000000 # Ridiculously large number
+		for activity in candidate:
+			actlatlng = LatLng(activity.position.lat, activity.position.lng)
+			current_distance = current.dist_to(actlatlng)
+			if current_distance < min_distance:
+				min_distance = current_distance
+				best_activity = activity
+		ordered_candidate.append(best_activity)
+		current_lat = best_activity.position.lat
+		current_lng = best_activity.position.lng
+		candidate.remove(activity)
+		ordered_candidate_value -= current_distance + best_activity.base_score
 
-    return [ordered_candidate, ordered_candidate_value]
+	return [ordered_candidate, ordered_candidate_value]
 
 def choose_candidate_subsets(activities, num_activities, num_subsets):
-    '''Given a list of activities, finds the #(num_subsets) subsets of activities with the highest total scores.'''
-    candidates = [] # List of candidate activity lists with associated scores
-    subsets = [] # List of all possible subsets with associated scores
+	'''Given a list of activities, finds the #(num_subsets) subsets of activities with the highest total scores.'''
+	candidates = [] # List of candidate activity lists with associated scores
+	subsets = [] # List of all possible subsets with associated scores
 
-    for combination in itertools.combinations(activities, num_activities):
-        subset_score = 100 # Depends on scoring system
-        for activity in combination:
-            subset_score += activity.base_score
-        subsets.append([list(combination), subset_score])
+	for combination in itertools.combinations(activities, num_activities):
+		subset_score = 100 # Depends on scoring system
+		for activity in combination:
+			subset_score += activity.base_score
+		subsets.append([list(combination), subset_score])
 
-    subsets.sort(key = lambda subset: subset[1])
-    candidates = subsets[0:num_subsets] # List of list of activities followed by scores
+	subsets.sort(key = lambda subset: subset[1])
+	candidates = subsets[0:num_subsets] # List of list of activities followed by scores
 
-    return candidates
+	return candidates
 
 def make_itinerary_subset(activities, start_lat, start_lng, end_lat, end_lng, num_activities, num_subsets):
 	
@@ -299,7 +340,7 @@ def make_itinerary_subset(activities, start_lat, start_lng, end_lat, end_lng, nu
 	activities.sort(key = lambda activity: activity.base_score) # Sort activities by score
 	candidates = choose_candidate_subsets(activities, num_activities, num_subsets)
 
-    # Find best subset by computing traveling time
+	# Find best subset by computing traveling time
 	for candidate in candidates: # candidate[0] is an array of activities
 		ordered_candidates.append(order_candidates(candidate[0], start_lat, start_lng))
 
@@ -316,7 +357,7 @@ def make_itinerary_subset(start_lat, start_lng, end_lat, end_lng, num_activities
 	sorted(activities, key = lambda activity: activity.base_score) # Sort activities by score
 	candidates = choose_candidate_subsets(activities, num_activities, num_subsets)
 
-    # Find best subset by computing traveling time
+	# Find best subset by computing traveling time
 	for candidate in candidates: # candidate[0] is an array of activities
 		ordered_candidates.append(order_candidates(candidate[0], start_lat, start_lng))
 
@@ -325,7 +366,8 @@ def make_itinerary_subset(start_lat, start_lng, end_lat, end_lng, num_activities
 '''
 #print(make_itinerary_subset(53.177, 13.799, 54, 15, 3, 10))
 
-print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
+#print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
 
 
 
+#print(get_all_data(34.137138, -118.122619,34.149625, -118.150468,0,6*3600))
