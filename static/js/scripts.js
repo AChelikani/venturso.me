@@ -1,9 +1,35 @@
-
+var start_lat = 34.137138
+var start_lng = -118.122619
+var end_lat = 34.149625
+var end_lng = -118.150468
 $(document).ready(function() {
 
   $("#btnGen").click(function(e) {
     e.preventDefault();
 
+    // Bring in map and data overlay
+    var platform = new H.service.Platform({
+      'app_id': 'N6MJW6UzW079S5ZZwcPl',
+      'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
+    });
+
+    var geocoder = platform.getGeocodingService()
+    geocodingParameters = {
+      searchText: document.getElementById("from").value,
+      jsonattributes : 1
+    };
+    geocoder.geocode(geocodingParameters, function(result) {
+      start_lat = result.response.view[0].result[0].location.displayPosition.latitude
+      start_lng = result.response.view[0].result[0].location.displayPosition.longitude 
+    }, function(error) {console.log(error)});
+    geocodingParameters = {
+      searchText: document.getElementById("to").value,
+      jsonattributes : 1
+    };
+    geocoder.geocode(geocodingParameters, function(result) {
+      end_lat = result.response.view[0].result[0].location.displayPosition.latitude
+      end_lng = result.response.view[0].result[0].location.displayPosition.longitude 
+    }, function(error) {console.log(error)});
 
     // Grab all the pinned venues we want to include in the journey
     console.log($("form").serialize());
@@ -29,7 +55,7 @@ $(document).ready(function() {
     $.ajax({
       type : "GET",
       url : "/pathfind",
-      data: $("form").serialize() + pinList + rejList,
+      data: $("form").serialize() + pinList + rejList + "&start_lat="+start_lat+"&start_lng="+start_lng+"&end_lat="+end_lat+"&end_lng="+end_lng,
       // data: JSON.stringify(data, null, '\t'),
       // contentType: 'application/json;charset=UTF-8',
       success: function(result) {
@@ -82,10 +108,10 @@ $(document).ready(function() {
           }
 
           // Bring in map and data overlay
-          var platform = new H.service.Platform({
+          /*var platform = new H.service.Platform({
             'app_id': 'N6MJW6UzW079S5ZZwcPl',
             'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
-          });
+          });*/
 
           var defaultLayers = platform.createDefaultLayers();
           var map, ui, mapEvents, behavior;
@@ -114,7 +140,7 @@ $(document).ready(function() {
           }
 
           function onError(error) {
-            alert("Oops!");
+            console.log(error);
           }
 
           function addRouteShapeToMap(route){
@@ -179,6 +205,7 @@ $(document).ready(function() {
                 var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
                 if (counter == 0) {
                   point1 = String(latlong[0]) + "," + String(latlong[1]);
+                  calculateRouteFromAtoB(platform, start_lat+","+start_lng,point1);
                   counter ++;
                 }
                 else {
@@ -190,7 +217,7 @@ $(document).ready(function() {
                 map.addObject(marker);
               }
             }
-
+            calculateRouteFromAtoB(platform,point1, end_lat+","+end_lng);         
           }
 
           // window.addEventListener('load', initialize, false );
