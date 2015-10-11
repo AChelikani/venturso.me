@@ -85,13 +85,14 @@ html,body{
 
 
 #btnGen{
+  width: 120px;
+  text-align: center;
   margin-left: 30px;
   border-radius: 0px;
   border: 1px solid white;
   background-color:#000;
   color: #fff;
   text-transform: uppercase;
-  letter-spacing:2px;
   -webkit-transition-duration: 1000ms;
   -moz-transition-duration: 1000ms;
   -o-transition-duration: 1000ms;
@@ -153,6 +154,13 @@ html,body{
   color: #2cb73c;
   border: 1px solid #2cb73c;
 }
+
+#activityList li.rejected {
+  background-color: #c64242;
+  color: #fff;
+  border: 1px solid #b72c2c;
+}
+
 .list-group-item {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -160,4 +168,32 @@ html,body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+#genItinerary {
+  margin-top: 20px;
+  width: 150px;
+  padding: 10px;
+  border-radius: 0px;
+  background-color:#fff;
+  color:#000;
+  border: 1px solid #000;
+  text-transform: uppercase;
+  -webkit-transition-duration: 1000ms;
+  -moz-transition-duration: 1000ms;
+  -o-transition-duration: 1000ms;
+  transition-duration: 1000ms;
+}
+
+#genItinerary:hover {
+  background-color:#000;
+  color:#fff;
+  -webkit-transition-duration: 1000ms;
+  -moz-transition-duration: 1000ms;
+  -o-transition-duration: 1000ms;
+  transition-duration: 1000ms;
+}
+
+#genItinerary:focus, #genItinerary:active {
+  outline:0;
 }

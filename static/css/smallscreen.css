@@ -162,6 +162,12 @@ html,body{
   border: 1px solid #2cb73c;
 }
 
+#activityList li.rejected {
+  background-color: #c64242;
+  color: #fff;
+  border: 1px solid #b72c2c;
+}
+
 .list-group-item {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

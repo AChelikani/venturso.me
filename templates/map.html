@@ -50,13 +50,19 @@
   </div>
 </div>
 
+  <br>
+
   <div class="table-responsive">
-    <table class="table">
-      <tr>
-        <th>Location</th>
-        <th>Arrival Time</th>
-        <th>Departure Time</th>
+    <table class="table" id="itinerary">
+      <tbody>
+        <tr>
+          <th>Location</th>
+          <th>Arrival Time</th>
+          <th>Departure Time</th>
+        </tbody>
     </table>
+
+    <center> <button class="btn btn-sml" id="genItinerary">Export to PDF</button> </center>
 
   </div>
 </div>
@@ -72,6 +78,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/jspdf.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/itinerary.js') }}"></script>
 
   </body>
 </html>
