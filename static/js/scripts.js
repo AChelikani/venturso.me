@@ -53,19 +53,19 @@ $(document).ready(function() {
                 liElem.addClass("rejected");
               } //else { /* It's not selected */ }
               liElem.on("click", function() {
-                // console.log("ay");
                 $(this).removeClass("selected");
-                var idstr = $(this).attr('id').split(" ")[0];
+                // console.log("ay");
+                var idstr = $(this).attr('id').split(/[^A-Za-z]/)[0];
                 // var idstr = $(this).html();
                 if($(this).hasClass("pinned")) {
                   // It's pinned. Cycle to rejected.
                   $("tbody #" + idstr).remove();
-                  liElem.removeClass("pinned");
-                  liElem.addClass("rejected");
+                  $(this).removeClass("pinned");
+                  $(this).addClass("rejected");
                 } else if($(this).hasClass("rejected")) {
                   $(this).removeClass("rejected");
                 } else {
-                  liElem.addClass("pinned");
+                  $(this).addClass("pinned");
                   $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
                       "<td>" + $(this).attr('id') + "</td>" +
                       "<td>filler arrival</td>" +
@@ -92,8 +92,8 @@ $(document).ready(function() {
               representation: 'display',
               routeattributes : 'waypoints,summary,shape,legs',
               maneuverattributes: 'direction,action',
-              waypoint0: a, 
-              waypoint1: b  
+              waypoint0: a,
+              waypoint1: b
             };
 
               router.calculateRoute(
