@@ -274,6 +274,15 @@ $(document).ready(function() {
                   }
 
                   var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
+                  marker.setData(name_to_id(itinerary[i]["name"]))
+                  marker.addEventListener('pointerenter', function(e) {
+                    var tr = document.getElementById(this.getData()+"TABLE")
+                    if (tr) { tr.style = "background-color: #f1f1f1"}
+                  });
+                  marker.addEventListener('pointerleave', function(e) {
+                    var tr = document.getElementById(this.getData()+"TABLE")
+                    if (tr) { tr.style = "" }
+                  });
                   map.addObject(marker);
                 }
               }
