@@ -15,19 +15,26 @@ $(document).ready(function() {
     });
     pinList += "]"
 
+    // Grab all the rejected venues we want to exclude from the journey
+    rejList = "&rejList=["
+    $(".rejected").each(function(index) {
+      if(index > 0)
+        rejList += ",";
+      rejList += this.innerHTML;
+    });
+    rejList += "]"
+
+
     // Generate a new itinerary
     $.ajax({
       type : "GET",
       url : "/pathfind",
-      data: $("form").serialize() + pinList,
+      data: $("form").serialize() + pinList + rejList,
       // data: JSON.stringify(data, null, '\t'),
       // contentType: 'application/json;charset=UTF-8',
       success: function(result) {
-          var locations = [];
-          var names = [];
-          var itinerary = [];
 
-          $("#activityList").html("");
+          $("#activityList").html(""); // Clear previous itinerary
           jsonit = JSON.parse(result);
           console.log(jsonit);
           // Grab all the data for the venue checklist and add the elements
@@ -35,22 +42,30 @@ $(document).ready(function() {
             if(jsonit['activityList'][act]['type'] != 'transportation') {
               console.log(jsonit['activityList'][act]['activity']);
 
-              liElem = $("<li class='list-group-item' id='"+ jsonit['activityList'][act]['activity']+ "'>"+jsonit['activityList'][act]['activity']+"</li>");
-              if(jsonit[jsonit['activityList'][act]['pinned']]) {
+              liElem = $("<li class='list-group-item' id='"+jsonit['activityList'][act]['name']+"'>"+jsonit['activityList'][act]['name']+"</li>");
+              if(pinList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
+                // It's pinned
                 liElem.addClass("pinned");
-              } else if($.inArray(jsonit['activityList'][act]['activity'], jsonit['itinerary']) >= 0) {
+              } else if(jsonit['itinerary'].indexOf(jsonit['activityList'][act]['name']) >= 0) {
                 liElem.addClass("selected");
-              }
+              } else if(rejList.indexOf(jsonit['activityList'][act]['name']) >= 0) {
+                // It's rejected
+                liElem.addClass("rejected");
+              } //else { /* It's not selected */ }
               liElem.on("click", function() {
                 // console.log("ay");
                 $(this).removeClass("selected");
-                var idstr = $(this).attr('id').split(" ")[0]
+                var idstr = $(this).attr('id').split(" ")[0];
+                // var idstr = $(this).html();
                 if($(this).hasClass("pinned")) {
-                  // console.log($(this) + "Has pinned");
-                  $(this).removeClass("pinned");
+                  // It's pinned. Cycle to rejected.
                   $("tbody #" + idstr).remove();
+                  liElem.removeClass("pinned");
+                  liElem.addClass("rejected");
+                } else if($(this).hasClass("rejected")) {
+                  $(this).removeClass("rejected");
                 } else {
-                  $(this).addClass("pinned");
+                  liElem.addClass("pinned");
                   $("#itinerary tbody").append("<tr id='" + idstr + "'>" +
                       "<td>" + $(this).attr('id') + "</td>" +
                       "<td>filler arrival</td>" +
@@ -125,10 +140,14 @@ $(document).ready(function() {
             names = [];
             itinerary = jsonit['itinerary'];
             for(act in jsonit['activityList']) {
-              locations.push(jsonit['activityList'][act]['latitude']);
-              locations.push(jsonit['activityList'][act]['longitude']);
-              names.push(jsonit['activityList'][act]['activity']);
+              if(jsonit['activityList'][act]['position'] != undefined){
+                locations.push(jsonit['activityList'][act]['position']['lat']);
+                locations.push(jsonit['activityList'][act]['position']['lng']);
+                names.push(jsonit['activityList'][act]['name']);
+              }
             }
+            console.log(locations);
+            console.log(names);
 
             map = new H.Map(
                 document.getElementById('map-canvas'),
