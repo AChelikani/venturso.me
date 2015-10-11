@@ -65,6 +65,22 @@ class ItineraryEvent:
 	def __str__(self):
 		return "{'name': '%s', 'cat': '%s', 'rating': %f}" % (self.name, self.cat, self.base_score)
 
+	def to_dict(self, number):
+		out = [{"name": "transport%d" %number, \
+			   "start": {"lat": self.origin.lat, "lng",self.origin.lng}, \
+			   "end": {"lat": self.lat, "lng",self.lng},
+			   "type": "transportation", "pinned": False, \
+			   "cat": "transportation"},
+			   {"name": self.name, \
+			   "position": {"lat": self.lat, "lng",self.lng}, \
+			   "type": "attraction", "pinned": False, \
+			   "cat": self.cat}]
+		return out
+
+	def names(self, number):
+		return ["transport%d", self.name]
+
+
 def jsonify(itinerary, end):
 	return '[' + ",".join(map(lambda x:x.to_json(), itinerary)) + \
 		',{"type": "transportation", "start":%s, "end":%s}]' % (itinerary[-1].position.to_json(), end.to_json())
@@ -145,4 +161,33 @@ def get_best_itinerary(start_lat, start_lng, end_lat, end_lng):
 			best_itinerary = jsonify(itn,end)
 		return best_itinerary
 
+#get_best_itinerary(52.5160,13.3779,52,14)
 
+def get_all_data(start_lat, start_lng, end_lat, end_lng):
+	start = LatLng(start_lat, start_lng)
+	end = LatLng(end_lat, end_lng)
+	all_attractions = pollHereAttractions(start.lat, start.lng)
+	best_score = 0
+	best_itinerary = []
+
+	output = {}
+	for i in range (20):
+		inds = range(len(all_attractions))
+		random.shuffle(inds)
+		shortlist = [all_attractions[i] for i in inds[:4]]
+		itn = build_itinerary(shortlist, start, end)
+		itn_score = score(itn)
+		if itn_score > best_score:
+			best_score = itn_score
+			best_itinerary = itn
+
+	activity_list = []
+	itinerary = []
+	for i in range(len(best_itinerary)):
+		activity_list += best_itinerary[i].to_dict(i)
+		itinerary += best_itinerary[i].names(i)
+	output['activityList'] = map(lambda x:x.to_dict, all_attractions)
+	output['itinerary'] = map(lambda x:x.name, itinerary)
+	return json.dumps(output)
+
+get_all_data(52.5160,13.3779,52,14)
