@@ -26,6 +26,7 @@ $(document).ready(function() {
       'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
     });
 
+    // Geocoding user input to get lat and long
     var geocoder = platform.getGeocodingService()
     geocodingParameters = {
       searchText: document.getElementById("from").value,
@@ -78,7 +79,9 @@ $(document).ready(function() {
         // data: JSON.stringify(data, null, '\t'),
         // contentType: 'application/json;charset=UTF-8',
         success: function(result) {
+          // Remove all objects on map
           if (map) map.removeObjects(map.getObjects());
+          // Set-up itinerary table
           document.getElementById('itinerary').innerHTML = '<tbody><tr id="header-row"><th>Location</th><th>Arrival Time</th><th>Departure Time</th></tr></tbody>'
             $("#activityList").html(""); // Clear previous itinerary
             // Grab json
