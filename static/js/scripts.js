@@ -67,7 +67,7 @@ $(document).ready(function() {
     rejList += "]"
 
 
-    // Generate a new itinerary\
+    // Generate a new itinerary
     function generate_everything(start_lat, start_lng, end_lat, end_lng) {
       $("#loading-wrapper").removeClass("hidden")
       $.ajax({
@@ -171,6 +171,7 @@ $(document).ready(function() {
             var defaultLayers = platform.createDefaultLayers();
             var ui, mapEvents, behavior;
 
+            // Display the route between two points on the map
             function calculateRouteFromAtoB(platform, a, b) {
               var router = platform.getRoutingService(),
               routeRequestParams = {
@@ -189,15 +190,18 @@ $(document).ready(function() {
                 );
             }
 
+            // On success, add the route shape to the map
             function onSuccess(result) {
               var route = result.response.route[0];
               addRouteShapeToMap(route);
             }
 
+            // On error, log the error
             function onError(error) {
               console.log(error);
             }
 
+            // Create the route shape and add it to the map
             function addRouteShapeToMap(route){
               var strip = new H.geo.Strip(),
                 routeShape = route.shape,
@@ -220,6 +224,7 @@ $(document).ready(function() {
               map.setViewBounds(polyline.getBounds(), true);
             }
 
+            // Initialize map and add values from algorithm into data structures
             function initialize() {
               console.log("yo initialize here");
               locations = [];
@@ -254,6 +259,7 @@ $(document).ready(function() {
               var point2;
               var counter = 0;
 
+              // Populate map with markers and routes
               for(i = 0; i < itinerary.length; i ++) {
                 if (itinerary[i]["name"].indexOf("transport") == -1) {
                   var temp = itinerary[i]["name"];
@@ -313,13 +319,3 @@ $(document).ready(function() {
 
 
 });
-
-// I love mixing jquery and javascript in the same file
-// function toggle(element) {
-//   if (element.className == "list-group-item") {
-//     element.className += " pinned";
-//   }
-//   else {
-//     element.className = "list-group-item";
-//   }
-// }
