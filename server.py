@@ -3,6 +3,7 @@ from flask import render_template
 from flask import request
 import json
 import algorithms2
+import os
 app = Flask(__name__)
 
 # Splash page!
