@@ -1,4 +1,4 @@
-
+// Construct PDF give itinerary
 $(document).ready(function() {
 	$("#genItinerary").click(function(e) {
 		var currentLine = 20;
@@ -9,16 +9,19 @@ $(document).ready(function() {
 		doc.setFontSize(16)
 		currentLine += 10;
 
+		// Get form values
 		var start = document.getElementById("start").value;
 		var end = document.getElementById("end").value;
 		var from = document.getElementById("from").value;
 		var to = document.getElementById("to").value;
 
+		// Print form values to PDF
 		doc.text(20, currentLine, "Start from:  " + from + "     |     " + start);
 		currentLine += 10;
 		doc.text(20, currentLine, "Finish at:   " + to + "     |     " + end);
 		currentLine += 20;
 
+		// Print itinerary by looking through JSON adding items to PDF
 		doc.setFontSize(20)
 		doc.text(20, currentLine, "Itinerary:");
 		doc.setFontSize(16)

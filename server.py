@@ -37,8 +37,6 @@ def get_time(string):
 # Called to gen the map. Dump all the algorithm junk here. Should accept from
 # address, to address, from time, to time, and optional optimization parameters
 #
-# Example to use:
-# http://localhost:5000/pathfind?from=Berkeley&to=Caltech&fromtime=Oct10&totime=Oct12
 @app.route('/pathfind', methods=['GET'])
 def path_find():
 	#print request.args['from']

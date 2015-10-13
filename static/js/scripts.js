@@ -3,6 +3,7 @@ var start_lng //= -118.122619
 var end_lat //= 34.149625
 var end_lng //= -118.150468
 var map;
+
 function name_to_id(my_name) {
   return (my_name.split(/[^A-Za-z]/)).join("-")
 }
@@ -25,6 +26,7 @@ $(document).ready(function() {
       'app_code': 'FOkZLbFrMx77dDpomCs9ZQ'
     });
 
+    // Geocoding user input to get lat and long
     var geocoder = platform.getGeocodingService()
     geocodingParameters = {
       searchText: document.getElementById("from").value,
@@ -67,7 +69,7 @@ $(document).ready(function() {
     rejList += "]"
 
 
-    // Generate a new itinerary\
+    // Generate a new itinerary
     function generate_everything(start_lat, start_lng, end_lat, end_lng) {
       $("#loading-wrapper").removeClass("hidden")
       $.ajax({
@@ -77,9 +79,12 @@ $(document).ready(function() {
         // data: JSON.stringify(data, null, '\t'),
         // contentType: 'application/json;charset=UTF-8',
         success: function(result) {
+          // Remove all objects on map
           if (map) map.removeObjects(map.getObjects());
+          // Set-up itinerary table
           document.getElementById('itinerary').innerHTML = '<tbody><tr id="header-row"><th>Location</th><th>Arrival Time</th><th>Departure Time</th></tr></tbody>'
             $("#activityList").html(""); // Clear previous itinerary
+            // Grab json
             jsonit = JSON.parse(result);
             // console.log(jsonit);
             // Grab all the data for the venue checklist and add the elements
@@ -156,9 +161,9 @@ $(document).ready(function() {
             console.log(start_time)
             for (i in jsonit['itinerary']) {
               console.log(jsonit['itinerary'][i])
-              var text =jsonit['itinerary'][i]["name"]
+              var text = jsonit['itinerary'][i]["name"]
               if (text.indexOf('transport') < 0) {
-
+                // If element is not a transportation element then add to table
                 idstr = name_to_id(jsonit['itinerary'][i]["name"])
                 $("#itinerary tbody").append("<tr id='" + idstr+"TABLE" + "'>" +
                   "<td>" + text + "</td>" +
@@ -171,6 +176,7 @@ $(document).ready(function() {
             var defaultLayers = platform.createDefaultLayers();
             var ui, mapEvents, behavior;
 
+            // Display the route between two points on the map
             function calculateRouteFromAtoB(platform, a, b) {
               var router = platform.getRoutingService(),
               routeRequestParams = {
@@ -189,15 +195,18 @@ $(document).ready(function() {
                 );
             }
 
+            // On success, add the route shape to the map
             function onSuccess(result) {
               var route = result.response.route[0];
               addRouteShapeToMap(route);
             }
 
+            // On error, log the error
             function onError(error) {
               console.log(error);
             }
 
+            // Create the route shape and add it to the map
             function addRouteShapeToMap(route){
               var strip = new H.geo.Strip(),
                 routeShape = route.shape,
@@ -220,8 +229,9 @@ $(document).ready(function() {
               map.setViewBounds(polyline.getBounds(), true);
             }
 
+            // Initialize map and add values from algorithm into data structures
             function initialize() {
-              console.log("yo initialize here");
+              console.log("Initializing");
               locations = [];
               names = [];
               itinerary = jsonit['itinerary'];
@@ -254,13 +264,14 @@ $(document).ready(function() {
               var point2;
               var counter = 0;
 
+              // Populate map with markers and routes
               for(i = 0; i < itinerary.length; i ++) {
                 if (itinerary[i]["name"].indexOf("transport") == -1) {
                   var temp = itinerary[i]["name"];
                   var pos = names.indexOf(temp);
                   console.log(temp);
                   var latlong = [parseFloat(locations[pos*2]), parseFloat(locations[pos*2+1])];
-                  if (counter == 0) {
+                  if (counter == 0) { // Different case for first marker
                     point1 = String(latlong[0]) + "," + String(latlong[1]);
                     var marker = new H.map.Marker({ lat: start_lat, lng: start_lng}, 
                                                   {icon: new H.map.Icon("static/marker.png")});
@@ -274,8 +285,11 @@ $(document).ready(function() {
                     point2 = point1;
                   }
 
+                  // Create marker with latitude and longitude with appropriate data
                   var marker = new H.map.Marker({ lat: latlong[0], lng: latlong[1] });
                   marker.setData(name_to_id(itinerary[i]["name"]))
+
+                  // On hover change color
                   marker.addEventListener('pointerenter', function(e) {
                     var tr = document.getElementById(this.getData()+"TABLE")
                     if (tr) { tr.style = "background-color: #f1f1f1"}
@@ -287,7 +301,9 @@ $(document).ready(function() {
                   map.addObject(marker);
                 }
               }
-              calculateRouteFromAtoB(platform,point1, end_lat+","+end_lng);   
+
+              // Different case for last marker
+              calculateRouteFromAtoB(platform,point1, end_lat + "," + end_lng);   
               var marker = new H.map.Marker({ lat: end_lat, lng: end_lng}, 
                                             {icon: new H.map.Icon("static/marker.png")});
               map.addObject(marker); 
@@ -313,13 +329,3 @@ $(document).ready(function() {
 
 
 });
-
-// I love mixing jquery and javascript in the same file
-// function toggle(element) {
-//   if (element.className == "list-group-item") {
-//     element.className += " pinned";
-//   }
-//   else {
-//     element.className = "list-group-item";
-//   }
-// }
